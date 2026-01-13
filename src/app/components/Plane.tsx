@@ -30,9 +30,32 @@ const Plane = () => {
     const loader = new GLTFLoader();
     loader.load('/plane.glb', (gltf: any) => {
       plane = gltf.scene;
+      
+      // Set initial position off-screen to the right
+      plane.position.set(0.5, 0.5, 0);
+      plane.rotation.set(0.3, -0.8, 0);
+      
       scene.add(plane);
       mixer = new THREE.AnimationMixer(plane);
       if (gltf.animations[0]) mixer.clipAction(gltf.animations[0]).play();
+      
+      // Animate plane flying in from the right to hero position
+      gsap.to(plane.position, { 
+        x: 0.075, 
+        y: 0, 
+        z: 0, 
+        duration: 3, 
+        ease: 'power2.out',
+        delay: 0.3
+      });
+      gsap.to(plane.rotation, { 
+        x: 0.3, 
+        y: -0.5, 
+        z: 0, 
+        duration: 2.5, 
+        ease: 'power2.out',
+        delay: 0.3
+      });
     });
 
     const positions = [
@@ -57,7 +80,7 @@ const Plane = () => {
       const aboutRect = aboutSection.getBoundingClientRect();
       
       // Check if we've scrolled past the about section
-      if (aboutRect.bottom < 0) {
+      if (aboutRect.bottom < 50) {
         // Fly out of screen (move far to the right and down)
         gsap.to(plane.position, { 
           x: 3, 
@@ -105,15 +128,15 @@ const Plane = () => {
       if (coords) {
         gsap.to(plane.position, { 
           ...coords.position, 
-          duration: 2, 
-          ease: 'power2.inOut',
-          overwrite: true
+          duration: 3, 
+          ease: 'power1.out',
+          // overwrite: true
         });
         gsap.to(plane.rotation, { 
           ...coords.rotation, 
-          duration: 2, 
-          ease: 'power2.inOut',
-          overwrite: true
+          duration: 3, 
+          ease: 'power1.out',
+          // overwrite: true
         });
       }
     };
