@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Instrument_Sans } from "next/font/google";
 import { ThemeProvider } from "@/app/components/theme-provider";
 import ScrollSmootherWrapper from "@/app/components/ScrollSmoother";
+import Plane from "@/app/components/Plane";
 import "./globals.css";
 import { NavigationBar } from "@/app/components/NavigationBar";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Plane />
           <ScrollSmootherWrapper>
             <div className="relative flex min-h-screen flex-col">
               <main className="flex-1">{children}</main>

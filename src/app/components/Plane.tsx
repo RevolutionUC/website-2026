@@ -38,7 +38,7 @@ const Plane = () => {
     const positions = [
       { id: 'hero', position: { x: 0.075, y: 0, z: 0 }, rotation: { x: 0.3, y: -0.5, z: 0 } },
       { id: 'clouds', position: { x: -0.2, y: 0, z: -1 }, rotation: { x: 0.5, y: 0.5, z: 0 } },
-      { id: 'about', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0.3, y: 0.5, z: 0 } }
+      { id: 'about', position: { x: -0.2, y: 0, z: -1 }, rotation: { x: 0.5, y: 0.5, z: 0 } }
     ];
 
     const animate = () => {
@@ -49,34 +49,72 @@ const Plane = () => {
     animate();
 
     const handleScroll = () => {
-      if (!plane || !containerRef.current) return;
+      if (!plane) return;
+      
+      const aboutSection = document.getElementById('about');
+      if (!aboutSection) return;
+      
+      const aboutRect = aboutSection.getBoundingClientRect();
+      
+      // Check if we've scrolled past the about section
+      if (aboutRect.bottom < 0) {
+        // Fly out of screen (move far to the right and down)
+        gsap.to(plane.position, { 
+          x: 3, 
+          y: -2, 
+          z: 0, 
+          duration: 1.5, 
+          ease: 'power2.in',
+          overwrite: true
+        });
+        gsap.to(plane.rotation, { 
+          x: 0.5, 
+          y: 1, 
+          z: 0.3, 
+          duration: 1.5, 
+          ease: 'power2.in',
+          overwrite: true
+        });
+        return;
+      }
       
       let currentSection = '';
-      document.querySelectorAll('.section').forEach((section) => {
-        if (section.getBoundingClientRect().top <= window.innerHeight / 3) {
-          currentSection = section.id;
+      const sections = document.querySelectorAll('.section');
+      
+      // Find the section that takes up the most viewport space
+      let maxVisibleArea = 0;
+      
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        
+        // Only consider sections up to and including 'about'
+        if (section.id === 'hero' || section.id === 'clouds' || section.id === 'about') {
+          // Calculate how much of the section is visible
+          const visibleTop = Math.max(0, rect.top);
+          const visibleBottom = Math.min(window.innerHeight, rect.bottom);
+          const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+          
+          if (visibleHeight > maxVisibleArea) {
+            maxVisibleArea = visibleHeight;
+            currentSection = section.id;
+          }
         }
       });
 
       const coords = positions.find(p => p.id === currentSection);
       if (coords) {
-        gsap.to(plane.position, { ...coords.position, duration: 3, ease: 'power1.out' });
-        gsap.to(plane.rotation, { ...coords.rotation, duration: 3, ease: 'power1.out' });
-      }
-
-      // Stop the plane at about
-      const about = document.getElementById('about');
-      if (about) {
-        const aboutBottom = about.getBoundingClientRect().bottom + window.scrollY;
-        const switchPoint = Math.max(0, aboutBottom - window.innerHeight);
-
-        if (window.scrollY >= switchPoint) {
-          containerRef.current.style.position = 'absolute';
-          containerRef.current.style.top = `${aboutBottom - window.innerHeight}px`;
-        } else {
-          containerRef.current.style.position = 'fixed';
-          containerRef.current.style.top = '0';
-        }
+        gsap.to(plane.position, { 
+          ...coords.position, 
+          duration: 2, 
+          ease: 'power2.inOut',
+          overwrite: true
+        });
+        gsap.to(plane.rotation, { 
+          ...coords.rotation, 
+          duration: 2, 
+          ease: 'power2.inOut',
+          overwrite: true
+        });
       }
     };
 
@@ -88,6 +126,7 @@ const Plane = () => {
 
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleResize);
+    handleScroll(); // Initialize position on mount
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -99,7 +138,7 @@ const Plane = () => {
     };
   }, []);
 
-  return <div ref={containerRef} className="absolute inset-0 pointer-events-none z-30" />;
+  return <div ref={containerRef} className="fixed inset-0 pointer-events-none z-50" />;
 };
 
 export default Plane;

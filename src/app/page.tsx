@@ -8,13 +8,11 @@ import Prizes from "@/app/sections/Prizes";
 import Stats from "@/app/sections/Stats";
 import Faq from "@/app/sections/FAQ";
 import Schedule from "@/app/sections/Schedule";
-import Plane from "@/app/sections/Plane";
 
 const Home = () => {
   return (
     <>
       <Hero />
-      <Plane />
       <Clouds />
       <About />
       <Clouds />
