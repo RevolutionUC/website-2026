@@ -9,22 +9,18 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Sponsors
+ * Sponsors Section - Suitcase Scroll Animation
  *
- * A scroll-driven animation that zooms into the top half (lid) of the suitcase image.
+ * 3-PHASE ANIMATION:
+ * ==================
+ * Phase 1 (0% - 25%):   Zoom in until suitcase takes up ~80% of viewport
+ * Phase 2 (25% - 75%):  Pan/scroll down along the suitcase to reveal sponsors (no more zooming)
+ * Phase 3 (75% - 100%): Shrink back to original size
  *
- * HOW THE ZOOM-INTO-LID ILLUSION WORKS:
- * =====================================
- * 1. The suitcase image is displayed at its initial size (512x512, similar to Sponsors.tsx)
- * 2. We use `transform-origin: center 25%` to anchor scaling near the top (lid area)
- * 3. As we scale up, the lid stays centered while the bottom (body/panda) scales out of view
- * 4. The blue lid fills the viewport, creating the illusion of zooming "into" it
- * 5. Sponsors fade in, appearing to be "inside" the suitcase lid
- *
- * The animation is fully reversible and scrubbed (tied to scroll position).
+ * The sponsors are positioned ON the suitcase image and scroll with it during Phase 2.
  */
 
-// Sample sponsor data - replace with your actual sponsors
+// Sample sponsor data
 const sponsors = [
   { name: "Sponsor 1", logo: "/logo.png", tier: "platinum" },
   { name: "Sponsor 2", logo: "/logo.png", tier: "platinum" },
@@ -37,10 +33,9 @@ const sponsors = [
 ];
 
 export default function Sponsors() {
-  // Refs for all animated elements
   const sectionRef = useRef<HTMLDivElement>(null);
   const pinWrapperRef = useRef<HTMLDivElement>(null);
-  const suitcaseRef = useRef<HTMLDivElement>(null);
+  const suitcaseContainerRef = useRef<HTMLDivElement>(null);
   const sponsorsRef = useRef<HTMLDivElement>(null);
   const sponsorItemsRef = useRef<HTMLDivElement[]>([]);
 
@@ -49,84 +44,116 @@ export default function Sponsors() {
       if (
         !sectionRef.current ||
         !pinWrapperRef.current ||
-        !suitcaseRef.current ||
+        !suitcaseContainerRef.current ||
         !sponsorsRef.current
       ) {
         return;
       }
 
-      // Create a GSAP timeline that's scrubbed to scroll progress
+      // Create the main timeline scrubbed to scroll
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top top", // Pin starts when section top hits viewport top
-          end: "+=250%", // Animation spans 2.5x viewport heights of scrolling
-          pin: pinWrapperRef.current, // Pin the wrapper during animation
-          scrub: 1, // Smooth scrubbing (1 = 1 second lag for smoothness)
-          anticipatePin: 1, // Prevents jank when entering pinned state
-          // markers: true, // Uncomment for debugging
+          start: "top top",
+          end: "+=400%", // 4x viewport heights of scrolling for smooth animation
+          pin: pinWrapperRef.current,
+          scrub: 1,
+          anticipatePin: 1,
+          markers: true, // Uncomment for debugging
         },
       });
 
       // ============================================
-      // PHASE 1: Zoom into the lid (top half)
-      // Scroll progress: 0% - 60%
+      // PHASE 1: Zoom in to 80% of viewport
+      // Scroll progress: 0% - 25%
       // ============================================
-
-      // Scale up the suitcase dramatically
-      // transform-origin is set to "center 25%" (lid area - top portion of image)
-      // The lid is roughly the top 60% of the image based on the reference
-      // As we scale, the bottom (panda and body) moves out of view
+      // Scale the suitcase from initial size to fill ~80% of viewport
+      // We use a scale that makes 512px image fill 80vh (roughly scale of 1.5-2 depending on viewport)
+      // Using scale: 2.5 as a good balance for most viewports
       tl.to(
-        suitcaseRef.current,
+        suitcaseContainerRef.current,
         {
-          scale: 6, // Scale factor to make lid fill viewport
-          y: "30%", // Move down to keep lid centered as we zoom
-          duration: 0.6,
-          ease: "power1.inOut",
+          scale: 2.5,
+          duration: 0.25,
+          ease: "power2.inOut",
         },
         0,
       );
 
-      // ============================================
-      // PHASE 2: Sponsors appear inside the lid
-      // Scroll progress: 60% - 100%
-      // ============================================
-
-      // Fade in the sponsors container
+      // Fade in sponsors during the end of zoom phase
       tl.fromTo(
         sponsorsRef.current,
-        {
-          opacity: 0,
-        },
+        { opacity: 0 },
         {
           opacity: 1,
-          duration: 0.2,
+          duration: 0.1,
           ease: "power2.out",
         },
-        0.5,
+        0.15,
       );
 
-      // Stagger in individual sponsor items
+      // Stagger in sponsor items
       tl.fromTo(
         sponsorItemsRef.current,
         {
           opacity: 0,
-          y: 50,
-          scale: 0.8,
+          y: 30,
         },
         {
           opacity: 1,
           y: 0,
-          scale: 1,
-          duration: 0.3,
-          stagger: 0.02, // Small stagger for wave effect
-          ease: "back.out(1.7)",
+          duration: 0.15,
+          stagger: 0.01,
+          ease: "power2.out",
         },
-        0.55,
+        0.18,
       );
 
-      // Cleanup function
+      // ============================================
+      // PHASE 2: Pan down along the suitcase
+      // Scroll progress: 25% - 75%
+      // No zooming - just translate Y to scroll through content
+      // ============================================
+      // Move the entire container up to reveal content below
+      // This creates the effect of scrolling DOWN through the suitcase
+      tl.to(
+        suitcaseContainerRef.current,
+        {
+          y: "-60vh", // Pan up by 60% of viewport to reveal bottom content
+          duration: 0.5,
+          ease: "none", // Linear for natural scroll feel
+        },
+        0.25,
+      );
+
+      // ============================================
+      // PHASE 3: Shrink back to original size
+      // Scroll progress: 75% - 100%
+      // ============================================
+      // Fade out sponsors first
+      tl.to(
+        sponsorsRef.current,
+        {
+          opacity: 0,
+          duration: 0.1,
+          ease: "power2.in",
+        },
+        0.75,
+      );
+
+      // Scale back down to original and reset position
+      tl.to(
+        suitcaseContainerRef.current,
+        {
+          scale: 1,
+          y: 0,
+          duration: 0.25,
+          ease: "power2.inOut",
+        },
+        0.75,
+      );
+
+      // Cleanup
       return () => {
         ScrollTrigger.getAll().forEach((st) => {
           if (st.trigger === sectionRef.current) {
@@ -150,158 +177,147 @@ export default function Sponsors() {
       ref={sectionRef}
       id="sponsors"
       className="relative w-full"
-      // The section needs enough height for ScrollTrigger to work
-      // The actual pinned content will stay fixed while we scroll through this height
-      style={{ height: "350vh" }}
+      style={{ height: "500vh" }} // Extra height for scroll distance
     >
-      {/*
-        Pin Wrapper: This entire container gets pinned during the animation.
-        It fills the viewport and contains all animated elements.
-      */}
+      {/* Pin Wrapper - gets pinned during animation */}
       <div
         ref={pinWrapperRef}
         className="relative w-full h-screen overflow-hidden"
       >
         {/*
-          SUITCASE: The suitcase image that zooms into its lid
-
-          CRITICAL: transform-origin is set to "center 25%"
-          This anchors the scaling to the lid area (top portion of the image)
-          As we scale up:
-          - The lid stays relatively centered in the viewport
-          - The bottom (panda and suitcase body) scales out of view below
-          - Combined with translateY, the lid fills the screen
+          Suitcase Container - contains both the image and sponsors overlay
+          This entire container scales and translates together
         */}
         <div
-          ref={suitcaseRef}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          ref={suitcaseContainerRef}
+          className="absolute inset-0 flex items-center justify-center"
           style={{
-            transformOrigin: "center 25%", // Anchor point for zoom (lid is in top portion)
+            transformOrigin: "center center",
             willChange: "transform",
           }}
         >
-          <Image
-            className="opacity-70"
-            src="/sponsors-suitcase.webp"
-            width={512}
-            height={512}
-            alt="Suitcase"
-            loading="lazy"
-          />
-        </div>
+          {/* The suitcase image */}
+          <div className="relative">
+            <Image
+              className="opacity-80"
+              src="/sponsors-suitcase.webp"
+              width={512}
+              height={512}
+              alt="Suitcase"
+              priority
+            />
 
-        {/*
-          SPONSORS CONTAINER: Appears "inside" the lid
-          This works because by the time sponsors fade in,
-          the scaled suitcase lid (blue area) is the full background
-        */}
-        <div
-          ref={sponsorsRef}
-          className="absolute inset-0 flex items-center justify-center"
-          style={{
-            opacity: 0,
-            willChange: "opacity",
-          }}
-        >
-          <div className="w-full max-w-6xl mx-auto px-8 py-16">
-            {/* Section Title */}
-            <h2 className="text-4xl md:text-6xl font-bold text-center mb-12 text-white drop-shadow-lg">
-              Our Sponsors
-            </h2>
+            {/*
+              Sponsors overlay - positioned ON the suitcase image
+              This is positioned relative to the image so it scales and moves with it
+            */}
+            <div
+              ref={sponsorsRef}
+              className="absolute inset-0 flex flex-col items-center justify-start pt-8 px-4"
+              style={{
+                opacity: 0,
+                willChange: "opacity",
+              }}
+            >
+              {/* Title */}
+              <h2 className="text-xl md:text-2xl font-bold text-center mb-4 text-white drop-shadow-lg">
+                Our Sponsors
+              </h2>
 
-            {/* Platinum Tier */}
-            <div className="mb-12">
-              <h3 className="text-2xl font-semibold text-center mb-6 text-amber-300">
-                Platinum
-              </h3>
-              <div className="flex flex-wrap justify-center gap-8">
-                {sponsors
-                  .filter((s) => s.tier === "platinum")
-                  .map((sponsor, index) => (
-                    <div
-                      key={`platinum-${sponsor.name}`}
-                      ref={(el) => addSponsorItemRef(el, index)}
-                      className="bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-2xl hover:scale-105 transition-transform duration-300"
-                    >
-                      <div className="relative w-32 h-32">
-                        <Image
-                          src={sponsor.logo}
-                          alt={sponsor.name}
-                          fill
-                          className="object-contain"
-                        />
+              {/* Platinum Tier */}
+              <div className="mb-4 w-full">
+                <h3 className="text-sm font-semibold text-center mb-2 text-amber-300">
+                  Platinum
+                </h3>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {sponsors
+                    .filter((s) => s.tier === "platinum")
+                    .map((sponsor, index) => (
+                      <div
+                        key={`platinum-${sponsor.name}`}
+                        ref={(el) => addSponsorItemRef(el, index)}
+                        className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-xl hover:scale-105 transition-transform duration-300"
+                      >
+                        <div className="relative w-12 h-12 md:w-16 md:h-16">
+                          <Image
+                            src={sponsor.logo}
+                            alt={sponsor.name}
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
-            </div>
 
-            {/* Gold Tier */}
-            <div className="mb-12">
-              <h3 className="text-xl font-semibold text-center mb-6 text-yellow-400">
-                Gold
-              </h3>
-              <div className="flex flex-wrap justify-center gap-6">
-                {sponsors
-                  .filter((s) => s.tier === "gold")
-                  .map((sponsor, index) => (
-                    <div
-                      key={`gold-${sponsor.name}`}
-                      ref={(el) =>
-                        addSponsorItemRef(
-                          el,
-                          index +
-                            sponsors.filter((s) => s.tier === "platinum")
-                              .length,
-                        )
-                      }
-                      className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-xl hover:scale-105 transition-transform duration-300"
-                    >
-                      <div className="relative w-24 h-24">
-                        <Image
-                          src={sponsor.logo}
-                          alt={sponsor.name}
-                          fill
-                          className="object-contain"
-                        />
+              {/* Gold Tier */}
+              <div className="mb-4 w-full">
+                <h3 className="text-xs font-semibold text-center mb-2 text-yellow-400">
+                  Gold
+                </h3>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {sponsors
+                    .filter((s) => s.tier === "gold")
+                    .map((sponsor, index) => (
+                      <div
+                        key={`gold-${sponsor.name}`}
+                        ref={(el) =>
+                          addSponsorItemRef(
+                            el,
+                            index +
+                              sponsors.filter((s) => s.tier === "platinum")
+                                .length,
+                          )
+                        }
+                        className="bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-lg hover:scale-105 transition-transform duration-300"
+                      >
+                        <div className="relative w-10 h-10 md:w-12 md:h-12">
+                          <Image
+                            src={sponsor.logo}
+                            alt={sponsor.name}
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
-            </div>
 
-            {/* Silver Tier */}
-            <div>
-              <h3 className="text-lg font-semibold text-center mb-6 text-gray-300">
-                Silver
-              </h3>
-              <div className="flex flex-wrap justify-center gap-4">
-                {sponsors
-                  .filter((s) => s.tier === "silver")
-                  .map((sponsor, index) => (
-                    <div
-                      key={`silver-${sponsor.name}`}
-                      ref={(el) =>
-                        addSponsorItemRef(
-                          el,
-                          index +
-                            sponsors.filter((s) => s.tier === "platinum")
-                              .length +
-                            sponsors.filter((s) => s.tier === "gold").length,
-                        )
-                      }
-                      className="bg-white/70 backdrop-blur-sm rounded-lg p-3 shadow-lg hover:scale-105 transition-transform duration-300"
-                    >
-                      <div className="relative w-16 h-16">
-                        <Image
-                          src={sponsor.logo}
-                          alt={sponsor.name}
-                          fill
-                          className="object-contain"
-                        />
+              {/* Silver Tier */}
+              <div className="w-full">
+                <h3 className="text-xs font-semibold text-center mb-2 text-gray-300">
+                  Silver
+                </h3>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {sponsors
+                    .filter((s) => s.tier === "silver")
+                    .map((sponsor, index) => (
+                      <div
+                        key={`silver-${sponsor.name}`}
+                        ref={(el) =>
+                          addSponsorItemRef(
+                            el,
+                            index +
+                              sponsors.filter((s) => s.tier === "platinum")
+                                .length +
+                              sponsors.filter((s) => s.tier === "gold").length,
+                          )
+                        }
+                        className="bg-white/70 backdrop-blur-sm rounded-md p-1.5 shadow-md hover:scale-105 transition-transform duration-300"
+                      >
+                        <div className="relative w-8 h-8 md:w-10 md:h-10">
+                          <Image
+                            src={sponsor.logo}
+                            alt={sponsor.name}
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
             </div>
           </div>
