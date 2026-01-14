@@ -8,132 +8,155 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * Sponsors Section - Suitcase Scroll Animation
- *
- * 3-PHASE ANIMATION:
- * ==================
- * Phase 1 (0% - 30%):   Zoom in to suitcase
- * Phase 2 (30% - 70%):  Pan down along the suitcase
- * Phase 3 (70% - 100%): Zoom out back to original size
- */
+// Sponsor data - customize as needed
+const sponsors = [
+  { tier: "Platinum", names: ["Sponsor 1", "Sponsor 2"] },
+  { tier: "Gold", names: ["Sponsor 3", "Sponsor 4", "Sponsor 5"] },
+  { tier: "Silver", names: ["Sponsor 6", "Sponsor 7", "Sponsor 8", "Sponsor 9"] },
+];
 
 export default function Sponsors() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const pinWrapperRef = useRef<HTMLDivElement>(null);
-  const suitcaseContainerRef = useRef<HTMLDivElement>(null);
+  const scaleLayerRef = useRef<HTMLDivElement>(null);
+  const panLayerRef = useRef<HTMLDivElement>(null);
+  const textOverlayRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      if (
-        !sectionRef.current ||
-        !pinWrapperRef.current ||
-        !suitcaseContainerRef.current
-      ) {
-        return;
-      }
+      const section = sectionRef.current;
+      const pin = pinWrapperRef.current;
+      const scaleLayer = scaleLayerRef.current;
+      const panLayer = panLayerRef.current;
+      const textOverlay = textOverlayRef.current;
+      if (!section || !pin || !scaleLayer || !panLayer || !textOverlay) return;
 
-      // Create the main timeline scrubbed to scroll
+      const ZOOM = 2.5; // Zoom level to fill ~80% of screen
+
+      gsap.set([scaleLayer, panLayer], {
+        force3D: true,
+        willChange: "transform",
+      });
+
+      // Initially hide text overlay
+      gsap.set(textOverlay, { opacity: 0, y: 50 });
+
+      const getMetrics = () => {
+        const img = panLayer.querySelector("img") as HTMLImageElement | null;
+        const baseH = img?.offsetHeight ?? 0;
+        const vh = window.innerHeight;
+
+        const scaledH = baseH * ZOOM;
+        // Limit pan distance to fit within the animation
+        const panDistance = Math.min(scaledH * 0.4, vh * 0.5);
+
+        const startY = vh * 0.05;
+        const endY = -panDistance;
+
+        return { vh, panDistance, startY, endY };
+      };
+
       const tl = gsap.timeline({
+        defaults: { ease: "none" },
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: section,
           start: "top top",
-          end: "+=400%", // 4x viewport heights of scrolling for smooth animation
-          pin: pinWrapperRef.current,
-          scrub: 3, // Higher value for ultra-smooth scrolling
+          end: () => {
+            const { vh } = getMetrics();
+            // Keep animation within ~1.5 viewport heights
+            return "+=" + vh * 1.5;
+          },
+          pin,
+          scrub: 0.3,
           anticipatePin: 1,
-          // markers: true, // Uncomment for debugging
+          fastScrollEnd: true,
+          invalidateOnRefresh: true,
         },
       });
 
-      // ============================================
-      // PHASE 1: Zoom in focusing on TOP of suitcase
-      // Scroll progress: 0% - 30%
-      // ============================================
-      tl.to(
-        suitcaseContainerRef.current,
-        {
-          scale: 2.5,
-          y: "25vh", // Start by showing top of suitcase
-          duration: 0.3,
-          ease: "power2.inOut",
-        },
-        0,
-      );
+      tl.addLabel("zoom", 0);
+      tl.addLabel("overlayIn", 0.08);
+      tl.addLabel("panStart", 0.15);
+      tl.addLabel("overlayOut", 0.25);
 
-      // ============================================
-      // PHASE 2: Pan down along ENTIRE suitcase
-      // Scroll progress: 30% - 70%
-      // Linear movement for smooth scroll-like feel
-      // ============================================
-      tl.to(
-        suitcaseContainerRef.current,
-        {
-          y: "-70vh", // Pan all the way to bottom of suitcase
-          duration: 0.4,
-          ease: "none", // Linear for smooth, consistent panning
-        },
-        0.3,
-      );
+      // Phase 1: 15% - Zoom in on suitcase
+      tl.to(scaleLayer, { scale: ZOOM, duration: 0.15 }, 0);
+      tl.to(panLayer, { y: () => getMetrics().startY, duration: 0.15 }, "zoom");
 
-      // ============================================
-      // PHASE 3: Zoom out - reverse of Phase 1
-      // Scroll progress: 70% - 100%
-      // Smooth transition back to original state
-      // ============================================
-      tl.to(
-        suitcaseContainerRef.current,
-        {
-          scale: 1,
-          y: 0,
-          duration: 0.3,
-          ease: "power2.inOut", // Match Phase 1 easing for symmetry
-        },
-        0.7,
-      );
+      // Phase 2: 7% - Fade in text overlay
+      tl.to(textOverlay, { opacity: 1, y: 0, duration: 0.07 }, "overlayIn");
 
-      // Cleanup
-      return () => {
-        ScrollTrigger.getAll().forEach((st) => {
-          if (st.trigger === sectionRef.current) {
-            st.kill();
-          }
-        });
-      };
+      // Phase 3: 25% - Pan down the suitcase with text
+      tl.to(panLayer, { y: () => getMetrics().endY, duration: 0.25 }, "panStart");
+
+      // Phase 4: 10% - Fade out text overlay (ends at 0.35)
+      tl.to(textOverlay, { opacity: 0, y: -50, duration: 0.1 }, "overlayOut");
+
+      // Phase 5: 15% - Zoom out back to original
+      tl.to(scaleLayer, { scale: 1, duration: 0.15 }, 0.85);
+      tl.to(panLayer, { y: 0, duration: 0.15 }, 0.85);
     },
-    { scope: sectionRef },
+    { scope: sectionRef }
   );
 
   return (
     <section
       ref={sectionRef}
       id="sponsors"
-      className="relative w-full"
-      style={{ height: "500vh" }} // Extra height for scroll distance
+      className="relative w-full min-h-screen"
     >
-      {/* Pin Wrapper - gets pinned during animation */}
-      <div
-        ref={pinWrapperRef}
-        className="relative w-full h-screen overflow-hidden"
-      >
-        {/* Suitcase Container - scales and translates */}
+      <div ref={pinWrapperRef} className="relative w-full h-screen overflow-hidden">
+        {/* Suitcase Layer */}
         <div
-          ref={suitcaseContainerRef}
+          ref={scaleLayerRef}
           className="absolute inset-0 flex items-center justify-center"
-          style={{
-            transformOrigin: "center 30%", // Zoom focuses on upper portion of suitcase
-            willChange: "transform",
-          }}
+          style={{ transformOrigin: "50% 0%" }}
         >
-          {/* The suitcase image */}
-          <Image
-            className="opacity-80"
-            src="/sponsors-suitcase.webp"
-            width={512}
-            height={512}
-            alt="Suitcase"
-            priority
-          />
+          <div ref={panLayerRef} className="flex items-center justify-center">
+            <Image
+              className="opacity-90 select-none"
+              src="/sponsors-suitcase.webp"
+              width={600}
+              height={600}
+              alt="Suitcase"
+              priority
+              onLoadingComplete={() => ScrollTrigger.refresh()}
+            />
+          </div>
+        </div>
+
+        {/* Text Overlay - Sponsors Content */}
+        <div
+          ref={textOverlayRef}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+        >
+          <div className="max-w-2xl mx-auto px-6 py-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl pointer-events-auto">
+            <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">
+              Our Sponsors
+            </h2>
+            
+            {sponsors.map((tierGroup) => (
+              <div key={tierGroup.tier} className="mb-6 last:mb-0">
+                <h3 className="text-xl font-semibold text-center mb-3 text-gray-600">
+                  {tierGroup.tier}
+                </h3>
+                <div className="flex flex-wrap justify-center gap-4">
+                  {tierGroup.names.map((name) => (
+                    <div
+                      key={name}
+                      className="px-6 py-3 bg-gray-100 rounded-lg text-gray-700 font-medium hover:bg-gray-200 transition-colors"
+                    >
+                      {name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            <p className="text-center text-gray-500 mt-6 text-sm">
+              Interested in sponsoring? Contact us!
+            </p>
+          </div>
         </div>
       </div>
     </section>
