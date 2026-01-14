@@ -37,7 +37,6 @@ export default function Sponsors() {
   const pinWrapperRef = useRef<HTMLDivElement>(null);
   const suitcaseContainerRef = useRef<HTMLDivElement>(null);
   const sponsorsRef = useRef<HTMLDivElement>(null);
-  const sponsorItemsRef = useRef<HTMLDivElement[]>([]);
 
   useGSAP(
     () => {
@@ -57,33 +56,30 @@ export default function Sponsors() {
           start: "top top",
           end: "+=400%", // 4x viewport heights of scrolling for smooth animation
           pin: pinWrapperRef.current,
-          scrub: 1,
+          scrub: 3, // Higher value for ultra-smooth scrolling
           anticipatePin: 1,
-          markers: true, // Uncomment for debugging
+          // markers: true, // Uncomment for debugging
         },
       });
 
       // ============================================
-      // PHASE 1: Zoom in to 80% of viewport
-      // Scroll progress: 0% - 25%
+      // PHASE 1: Zoom in focusing on TOP of suitcase
+      // Scroll progress: 0% - 20%
       // ============================================
-      // Scale the suitcase from initial size to fill ~80% of viewport
-      // We use a scale that makes 512px image fill 80vh (roughly scale of 1.5-2 depending on viewport)
-      // Using scale: 2.5 as a good balance for most viewports
       tl.to(
         suitcaseContainerRef.current,
         {
           scale: 2.5,
-          duration: 0.25,
+          y: "25vh", // Start by showing top of suitcase
+          duration: 0.2,
           ease: "power2.inOut",
         },
         0,
       );
 
-      // Fade in sponsors during the end of zoom phase
-      tl.fromTo(
+      // Fade in ALL sponsors together (no stagger for smoothness)
+      tl.to(
         sponsorsRef.current,
-        { opacity: 0 },
         {
           opacity: 1,
           duration: 0.1,
@@ -92,45 +88,25 @@ export default function Sponsors() {
         0.15,
       );
 
-      // Stagger in sponsor items
-      tl.fromTo(
-        sponsorItemsRef.current,
-        {
-          opacity: 0,
-          y: 30,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.15,
-          stagger: 0.01,
-          ease: "power2.out",
-        },
-        0.18,
-      );
-
       // ============================================
-      // PHASE 2: Pan down along the suitcase
-      // Scroll progress: 25% - 75%
-      // No zooming - just translate Y to scroll through content
+      // PHASE 2: Pan down along ENTIRE suitcase
+      // Scroll progress: 20% - 70%
+      // Linear movement for smooth scroll-like feel
       // ============================================
-      // Move the entire container up to reveal content below
-      // This creates the effect of scrolling DOWN through the suitcase
       tl.to(
         suitcaseContainerRef.current,
         {
-          y: "-60vh", // Pan up by 60% of viewport to reveal bottom content
+          y: "-70vh", // Pan all the way to bottom of suitcase
           duration: 0.5,
-          ease: "none", // Linear for natural scroll feel
+          ease: "none", // Linear for smooth, consistent panning
         },
-        0.25,
+        0.2,
       );
 
       // ============================================
-      // PHASE 3: Shrink back to original size
-      // Scroll progress: 75% - 100%
+      // PHASE 3: Hold at bottom briefly then fade sponsors
+      // Scroll progress: 70% - 80%
       // ============================================
-      // Fade out sponsors first
       tl.to(
         sponsorsRef.current,
         {
@@ -138,19 +114,23 @@ export default function Sponsors() {
           duration: 0.1,
           ease: "power2.in",
         },
-        0.75,
+        0.7,
       );
 
-      // Scale back down to original and reset position
+      // ============================================
+      // PHASE 4: Zoom out - reverse of Phase 1
+      // Scroll progress: 80% - 100%
+      // Smooth transition back to original state
+      // ============================================
       tl.to(
         suitcaseContainerRef.current,
         {
           scale: 1,
           y: 0,
-          duration: 0.25,
-          ease: "power2.inOut",
+          duration: 0.2,
+          ease: "power2.inOut", // Match Phase 1 easing for symmetry
         },
-        0.75,
+        0.8,
       );
 
       // Cleanup
@@ -164,13 +144,6 @@ export default function Sponsors() {
     },
     { scope: sectionRef },
   );
-
-  // Helper to add refs to sponsor items array
-  const addSponsorItemRef = (el: HTMLDivElement | null, index: number) => {
-    if (el) {
-      sponsorItemsRef.current[index] = el;
-    }
-  };
 
   return (
     <section
@@ -192,7 +165,7 @@ export default function Sponsors() {
           ref={suitcaseContainerRef}
           className="absolute inset-0 flex items-center justify-center"
           style={{
-            transformOrigin: "center center",
+            transformOrigin: "center 30%", // Zoom focuses on upper portion of suitcase
             willChange: "transform",
           }}
         >
@@ -213,7 +186,7 @@ export default function Sponsors() {
             */}
             <div
               ref={sponsorsRef}
-              className="absolute inset-0 flex flex-col items-center justify-start pt-8 px-4"
+              className="absolute inset-0 flex flex-col items-center justify-center px-8 py-12"
               style={{
                 opacity: 0,
                 willChange: "opacity",
@@ -235,8 +208,7 @@ export default function Sponsors() {
                     .map((sponsor, index) => (
                       <div
                         key={`platinum-${sponsor.name}`}
-                        ref={(el) => addSponsorItemRef(el, index)}
-                        className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-xl hover:scale-105 transition-transform duration-300"
+                        className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-xl"
                       >
                         <div className="relative w-12 h-12 md:w-16 md:h-16">
                           <Image
@@ -262,15 +234,7 @@ export default function Sponsors() {
                     .map((sponsor, index) => (
                       <div
                         key={`gold-${sponsor.name}`}
-                        ref={(el) =>
-                          addSponsorItemRef(
-                            el,
-                            index +
-                              sponsors.filter((s) => s.tier === "platinum")
-                                .length,
-                          )
-                        }
-                        className="bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-lg hover:scale-105 transition-transform duration-300"
+                        className="bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-lg"
                       >
                         <div className="relative w-10 h-10 md:w-12 md:h-12">
                           <Image
@@ -296,16 +260,7 @@ export default function Sponsors() {
                     .map((sponsor, index) => (
                       <div
                         key={`silver-${sponsor.name}`}
-                        ref={(el) =>
-                          addSponsorItemRef(
-                            el,
-                            index +
-                              sponsors.filter((s) => s.tier === "platinum")
-                                .length +
-                              sponsors.filter((s) => s.tier === "gold").length,
-                          )
-                        }
-                        className="bg-white/70 backdrop-blur-sm rounded-md p-1.5 shadow-md hover:scale-105 transition-transform duration-300"
+                        className="bg-white/70 backdrop-blur-sm rounded-md p-1.5 shadow-md"
                       >
                         <div className="relative w-8 h-8 md:w-10 md:h-10">
                           <Image
