@@ -8,7 +8,7 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Sponsor data - customize as needed
+// Sponsor data 
 const sponsors = [
   { tier: "Platinum", names: ["Sponsor 1", "Sponsor 2"] },
   { tier: "Gold", names: ["Sponsor 3", "Sponsor 4", "Sponsor 5"] },
@@ -35,7 +35,7 @@ export default function Sponsors() {
       if (!section || !pin || !scaleLayer || !panLayer || !textOverlay) return;
 
       const ZOOM = 2.5; // Zoom level to fill ~80% of screen
-      const SCROLL_LENGTH = 3.5; // Multiplier for scroll distance (was 1.5)
+      const SCROLL_LENGTH = 3.5; // Multiplier for scroll distance 
 
       gsap.set([scaleLayer, panLayer], {
         force3D: true,
@@ -67,11 +67,11 @@ export default function Sponsors() {
           start: "top top",
           end: () => {
             const { vh } = getMetrics();
-            // Extended scroll distance for smoother animation
+            
             return "+=" + vh * SCROLL_LENGTH;
           },
           pin,
-          scrub: 0.8, // Increased scrub for smoother feel
+          scrub: 0.8, 
           anticipatePin: 1,
           fastScrollEnd: true,
           invalidateOnRefresh: true,
