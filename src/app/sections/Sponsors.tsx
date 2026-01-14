@@ -12,7 +12,10 @@ gsap.registerPlugin(ScrollTrigger);
 const sponsors = [
   { tier: "Platinum", names: ["Sponsor 1", "Sponsor 2"] },
   { tier: "Gold", names: ["Sponsor 3", "Sponsor 4", "Sponsor 5"] },
-  { tier: "Silver", names: ["Sponsor 6", "Sponsor 7", "Sponsor 8", "Sponsor 9"] },
+  {
+    tier: "Silver",
+    names: ["Sponsor 6", "Sponsor 7", "Sponsor 8", "Sponsor 9"],
+  },
 ];
 
 export default function Sponsors() {
@@ -32,6 +35,7 @@ export default function Sponsors() {
       if (!section || !pin || !scaleLayer || !panLayer || !textOverlay) return;
 
       const ZOOM = 2.5; // Zoom level to fill ~80% of screen
+      const SCROLL_LENGTH = 3.5; // Multiplier for scroll distance (was 1.5)
 
       gsap.set([scaleLayer, panLayer], {
         force3D: true,
@@ -63,40 +67,71 @@ export default function Sponsors() {
           start: "top top",
           end: () => {
             const { vh } = getMetrics();
-            // Keep animation within ~1.5 viewport heights
-            return "+=" + vh * 1.5;
+            // Extended scroll distance for smoother animation
+            return "+=" + vh * SCROLL_LENGTH;
           },
           pin,
-          scrub: 0.3,
+          scrub: 0.8, // Increased scrub for smoother feel
           anticipatePin: 1,
           fastScrollEnd: true,
           invalidateOnRefresh: true,
         },
       });
 
+      // Spread out the animation phases across the longer scroll distance
       tl.addLabel("zoom", 0);
-      tl.addLabel("overlayIn", 0.08);
-      tl.addLabel("panStart", 0.15);
-      tl.addLabel("overlayOut", 0.25);
+      tl.addLabel("overlayIn", 0.12);
+      tl.addLabel("panStart", 0.2);
+      tl.addLabel("overlayOut", 0.22); // Fade out very early, near start of pan
+      tl.addLabel("panEnd", 0.35); // Shorter pan
+      tl.addLabel("zoomOut", 0.65);
 
-      // Phase 1: 15% - Zoom in on suitcase
-      tl.to(scaleLayer, { scale: ZOOM, duration: 0.15 }, 0);
-      tl.to(panLayer, { y: () => getMetrics().startY, duration: 0.15 }, "zoom");
+      // Phase 1: 20% - Zoom in on suitcase (slower, smoother zoom)
+      tl.to(
+        scaleLayer,
+        { scale: ZOOM, duration: 0.2, ease: "power1.inOut" },
+        0,
+      );
+      tl.to(
+        panLayer,
+        { y: () => getMetrics().startY, duration: 0.2, ease: "power1.inOut" },
+        "zoom",
+      );
 
-      // Phase 2: 7% - Fade in text overlay
-      tl.to(textOverlay, { opacity: 1, y: 0, duration: 0.07 }, "overlayIn");
+      // Phase 2: 8% - Fade in text overlay
+      tl.to(
+        textOverlay,
+        { opacity: 1, y: 0, duration: 0.08, ease: "power2.out" },
+        "overlayIn",
+      );
 
-      // Phase 3: 25% - Pan down the suitcase with text
-      tl.to(panLayer, { y: () => getMetrics().endY, duration: 0.25 }, "panStart");
+      // Phase 3: 15% - Pan down the suitcase with text (shorter pan)
+      tl.to(
+        panLayer,
+        {
+          y: () => getMetrics().endY * 0.4,
+          duration: 0.15,
+          ease: "power1.inOut",
+        },
+        "panStart",
+      );
 
-      // Phase 4: 10% - Fade out text overlay (ends at 0.35)
-      tl.to(textOverlay, { opacity: 0, y: -50, duration: 0.1 }, "overlayOut");
+      // Phase 4: 10% - Fade out text overlay early
+      tl.to(
+        textOverlay,
+        { opacity: 0, y: -30, duration: 0.1, ease: "power2.in" },
+        "overlayOut",
+      );
 
-      // Phase 5: 15% - Zoom out back to original
-      tl.to(scaleLayer, { scale: 1, duration: 0.15 }, 0.85);
-      tl.to(panLayer, { y: 0, duration: 0.15 }, 0.85);
+      // Phase 5: 20% - Zoom out back to original (slower, smoother)
+      tl.to(
+        scaleLayer,
+        { scale: 1, duration: 0.2, ease: "power1.inOut" },
+        "zoomOut",
+      );
+      tl.to(panLayer, { y: 0, duration: 0.2, ease: "power1.inOut" }, "zoomOut");
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
@@ -105,7 +140,10 @@ export default function Sponsors() {
       id="sponsors"
       className="relative w-full min-h-screen"
     >
-      <div ref={pinWrapperRef} className="relative w-full h-screen overflow-hidden">
+      <div
+        ref={pinWrapperRef}
+        className="relative w-full h-screen overflow-hidden"
+      >
         {/* Suitcase Layer */}
         <div
           ref={scaleLayerRef}
@@ -120,7 +158,7 @@ export default function Sponsors() {
               height={600}
               alt="Suitcase"
               priority
-              onLoadingComplete={() => ScrollTrigger.refresh()}
+              onLoad={() => ScrollTrigger.refresh()}
             />
           </div>
         </div>
@@ -134,7 +172,7 @@ export default function Sponsors() {
             <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">
               Our Sponsors
             </h2>
-            
+
             {sponsors.map((tierGroup) => (
               <div key={tierGroup.tier} className="mb-6 last:mb-0">
                 <h3 className="text-xl font-semibold text-center mb-3 text-gray-600">
