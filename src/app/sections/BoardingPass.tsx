@@ -2,7 +2,12 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import Image from "next/image";
 import SplitText from "@/app/effects/SplitText";
-import { InputField, SelectField, Checkbox, CheckboxGroup } from "@/components/ui";
+import {
+  InputField,
+  SelectField,
+  Checkbox,
+  CheckboxGroup,
+} from "@/components/ui";
 import {
   Pagination,
   PaginationContent,
@@ -81,7 +86,9 @@ export default function BoardingPass() {
       });
 
       const data = await response.json();
-      const message = Array.isArray(data.message) ? data.message.join("\n") : data.message;
+      const message = Array.isArray(data.message)
+        ? data.message.join("\n")
+        : data.message;
 
       if (response.ok) {
         setNotification({ message, type: "success" });
@@ -116,7 +123,10 @@ export default function BoardingPass() {
   }
 
   return (
-    <div id="boarding-pass" className="section w-full min-h-screen relative overflow-hidden">
+    <div
+      id="boarding-pass"
+      className="section w-full min-h-screen relative overflow-hidden"
+    >
       <div className="relative z-20 w-full h-full flex items-start justify-center pt-[10%] px-4 sm:px-6 lg:px-8">
         <div
           className={`w-full max-w-4xl rounded-3xl ${
@@ -162,8 +172,8 @@ export default function BoardingPass() {
                 textAlign="left"
               />
               <p className="mt-3 text-sm sm:text-base text-gray-700 max-w-2xl">
-                Secure your spot at RevolutionUC 2026. Fill out the form and we&apos;ll send you a
-                confirmation email and QR code.
+                Secure your spot at RevolutionUC 2026. Fill out the form and
+                we&apos;ll send you a confirmation email and QR code.
               </p>
             </div>
           )}
@@ -174,12 +184,18 @@ export default function BoardingPass() {
                 notification.type === "success" ? "bg-green-500" : "bg-red-500"
               }`}
             >
-              <pre className="whitespace-pre-wrap font-sans">{notification.message}</pre>
+              <pre className="whitespace-pre-wrap font-sans">
+                {notification.message}
+              </pre>
             </div>
           )}
 
           {showForm && (
-            <form onSubmit={handleSubmit} className="space-y-8" encType="multipart/form-data">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-8"
+              encType="multipart/form-data"
+            >
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-gray-500">
@@ -204,8 +220,18 @@ export default function BoardingPass() {
               <div className={currentStep === 0 ? "space-y-6" : "hidden"}>
                 {/* Name */}
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <InputField name="firstName" label="First Name" placeholder="Bob" required />
-                  <InputField name="lastName" label="Last Name" placeholder="Evans" required />
+                  <InputField
+                    name="firstName"
+                    label="First Name"
+                    placeholder="Bob"
+                    required
+                  />
+                  <InputField
+                    name="lastName"
+                    label="Last Name"
+                    placeholder="Evans"
+                    required
+                  />
                 </div>
 
                 {/* Email */}
@@ -233,7 +259,12 @@ export default function BoardingPass() {
 
                 {/* Country & Phone */}
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <SelectField name="country" label="Country" options={COUNTRIES} required />
+                  <SelectField
+                    name="country"
+                    label="Country"
+                    options={COUNTRIES}
+                    required
+                  />
                   <InputField
                     name="phoneNumber"
                     label="Phone Number"
@@ -261,13 +292,29 @@ export default function BoardingPass() {
                     options={EDUCATION_LEVELS}
                     required
                   />
-                  <SelectField name="major" label="Major" options={MAJORS} required />
+                  <SelectField
+                    name="major"
+                    label="Major"
+                    options={MAJORS}
+                    required
+                  />
                 </div>
 
                 {/* Age & Gender */}
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <InputField name="age" label="Age" type="number" placeholder="18" required />
-                  <SelectField name="gender" label="Gender" options={GENDERS} required />
+                  <InputField
+                    name="age"
+                    label="Age"
+                    type="number"
+                    placeholder="18"
+                    required
+                  />
+                  <SelectField
+                    name="gender"
+                    label="Gender"
+                    options={GENDERS}
+                    required
+                  />
                 </div>
 
                 {/* Graduation Year */}
@@ -291,7 +338,12 @@ export default function BoardingPass() {
               <div className={currentStep === 2 ? "space-y-6" : "hidden"}>
                 {/* Shirt Size & Hackathons */}
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <SelectField name="shirtSize" label="Shirt Size" options={SHIRT_SIZES} required />
+                  <SelectField
+                    name="shirtSize"
+                    label="Shirt Size"
+                    options={SHIRT_SIZES}
+                    required
+                  />
                   <SelectField
                     name="hackathons"
                     label="Hackathons Attended"
@@ -307,7 +359,11 @@ export default function BoardingPass() {
                     label="Dietary Restrictions"
                     placeholder="None"
                   />
-                  <InputField name="githubUsername" label="GitHub Username" placeholder="octocat" />
+                  <InputField
+                    name="githubUsername"
+                    label="GitHub Username"
+                    placeholder="octocat"
+                  />
                 </div>
 
                 {/* Optional: LinkedIn */}
@@ -320,7 +376,10 @@ export default function BoardingPass() {
 
                 {/* Resume */}
                 <div>
-                  <label htmlFor="resume" className="mb-1 block font-semibold text-gray-900">
+                  <label
+                    htmlFor="resume"
+                    className="mb-1 block font-semibold text-gray-900"
+                  >
                     Resume
                   </label>
                   <input
@@ -341,10 +400,15 @@ export default function BoardingPass() {
 
                 {/* Agreements */}
                 <fieldset className="space-y-3">
-                  <legend className="font-semibold text-gray-900">Agreements</legend>
+                  <legend className="font-semibold text-gray-900">
+                    Agreements
+                  </legend>
                   <Checkbox name="waiver" required>
                     I agree to the{" "}
-                    <a href="/waiver" className="text-red-700 underline hover:text-red-800">
+                    <a
+                      href="/waiver"
+                      className="text-red-700 underline hover:text-red-800"
+                    >
                       RevolutionUC Waiver
                     </a>
                   </Checkbox>
@@ -375,7 +439,9 @@ export default function BoardingPass() {
                         goToPreviousStep();
                       }}
                       className={`bg-gray-900 text-white hover:bg-gray-800 ${
-                        currentStep === 0 ? "pointer-events-none opacity-40" : ""
+                        currentStep === 0
+                          ? "pointer-events-none opacity-40"
+                          : ""
                       }`}
                     />
                   </PaginationItem>
