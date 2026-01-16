@@ -15,22 +15,36 @@ const GsapScrollTrigger = () => {
     () => {
       const boxes = gsap.utils.toArray(scrollRef.current.children);
 
-      boxes.forEach((box: any, index: number) => {
-        const direction = index === 0 || index === 1 || index === 2 || index === 3 ? 1 : -1;
+      // Define from/to positions for each cloud individually
+      const cloudAnimations = [
+        { from: { x: -800, y: -150, scale: 1 }, to: { x: -500, y: -150, scale: 1 } },    // Cloud 0 - from left
+        { from: { x: -1000, y: 30, scale: 1 }, to: { x: -350, y: 30, scale: 1.5 } },    // Cloud 1 - from left
+        { from: { x: -900, y: -20, scale: 1 }, to: { x: -200, y: -20, scale: 1 } },    // Cloud 2 - from left
+        { from: { x: -1100, y: 100, scale: 1 }, to: { x: -300, y: 130, scale: 0.5 } },      // Cloud 3 - from left
+        { from: { x: 800, y: -100, scale: 1 }, to: { x: 400, y: -100, scale: 1 } },      // Cloud 4 - from right
+        { from: { x: 1000, y: 90, scale: 1 }, to: { x: 450, y: 90, scale: 1 } },      // Cloud 5 - from right
+        { from: { x: 900, y: -140, scale: 1 }, to: { x: 500, y: -140, scale: 1 } },      // Cloud 6 - from right
+        { from: { x: 1100, y: 100, scale: 1 }, to: { x: 650, y: 30, scale: 1 } },      // Cloud 7 - from right
+      ];
 
-        gsap.to(box, {
-          x: direction * 100 * (index + 3),
-          scale: 1.5,
-          scrollTrigger: {
-            trigger: box,
-            start: "bottom bottom",
-            end: "top 20%",
-            scrub: true,
+      boxes.forEach((box: any, index: number) => {
+        const animation = cloudAnimations[index] || cloudAnimations[0];
+
+        gsap.fromTo(box, 
+          animation.from,
+          {
+            ...animation.to,
+            scrollTrigger: {
+              trigger: box,
+              start: "bottom bottom",
+              end: "top 20%",
+              scrub: true,
+              //markers: true,
+            },
+            //ease: "power2.out",
             //markers: true,
-          },
-          //ease: "power2.out",
-          //markers: true,
-        });
+          }
+        );
       });
     },
     { scope: scrollRef },
@@ -38,7 +52,7 @@ const GsapScrollTrigger = () => {
 
   return (
     <main>
-      <div id="clouds" className="section absolute top-[45%] left-0 right-0 h-screen z-0 overflow-visible">
+      <div id="clouds" className="section absolute top-[45%] left-0 right-0 h-screen z-[60] overflow-visible">
         <Image
           src="/cloud_final1.webp"
           alt="Cloud"
@@ -86,14 +100,14 @@ const GsapScrollTrigger = () => {
         />
       </div>
 
-      <div className="h-[70vh] w-full relative flex justify-center overflow-hidden" ref={scrollRef}>
+      <div className="h-[70vh] w-full relative flex justify-center overflow-y-visible z-200" ref={scrollRef}>
         <Image
           src="/cloud_final1.webp"
           alt="Cloud"
           width={800}
           height={450}
           loading="lazy"
-          className="scroll-box h-110 absolute top-0 left-[60%]"
+          className="scroll-box h-110 absolute"
         />
         <Image
           src="/cloud_final2.webp"
@@ -101,7 +115,7 @@ const GsapScrollTrigger = () => {
           width={800}
           height={450}
           loading="lazy"
-          className="scroll-box h-100 absolute top-30 left-[50%]"
+          className="scroll-box h-100 absolute"
         />
         <Image
           src="/cloud_final1.webp"
@@ -109,7 +123,7 @@ const GsapScrollTrigger = () => {
           width={800}
           height={450}
           loading="lazy"
-          className="scroll-box h-100 absolute top-0 left-[40%]"
+          className="scroll-box h-100 absolute"
         />
         <Image
           src="/cloud_final5.webp"
@@ -117,15 +131,7 @@ const GsapScrollTrigger = () => {
           width={800}
           height={450}
           loading="lazy"
-          className="scroll-box h-100 absolute top-0 left-[70%]"
-        />
-        <Image
-          src="/cloud_final4.webp"
-          alt="Cloud"
-          width={800}
-          height={450}
-          loading="lazy"
-          className="scroll-box h-150 absolute top-0 right-[50%]"
+          className="scroll-box h-100 absolute"
         />
         <Image
           src="/cloud_final1.webp"
@@ -133,7 +139,15 @@ const GsapScrollTrigger = () => {
           width={800}
           height={450}
           loading="lazy"
-          className="scroll-box h-120 absolute top-20 right-[20%]"
+          className="scroll-box h-150 absolute"
+        />
+        <Image
+          src="/cloud_final1.webp"
+          alt="Cloud"
+          width={800}
+          height={450}
+          loading="lazy"
+          className="scroll-box h-120 absolute"
         />
         <Image
           src="/cloud_final4.webp"
@@ -141,7 +155,7 @@ const GsapScrollTrigger = () => {
           width={800}
           height={450}
           loading="lazy"
-          className="scroll-box h-100 absolute top-10 right-[30%]"
+          className="scroll-box h-100 absolute"
         />
         <Image
           src="/cloud_final5.webp"
@@ -149,7 +163,7 @@ const GsapScrollTrigger = () => {
           width={800}
           height={450}
           loading="lazy"
-          className="scroll-box h-100 absolute top-0 right-[60%]"
+          className="scroll-box h-100 absolute"
         />
       </div>
     </main>
