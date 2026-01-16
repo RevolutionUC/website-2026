@@ -1,6 +1,8 @@
 "use client";
-import { useState, type FormEvent, type ChangeEvent } from "react";
+import { useState, useEffect, type FormEvent, type ChangeEvent } from "react";
 import Image from "next/image";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "gsap";
 import SplitText from "@/app/effects/SplitText";
 import { InputField, SelectField, Checkbox, CheckboxGroup } from "@/components/ui";
 import {
@@ -21,6 +23,8 @@ import {
   REFERRAL_SOURCES,
 } from "@/lib/registration-data";
 
+gsap.registerPlugin(ScrollTrigger);
+
 type NotificationType = "success" | "error" | null;
 
 interface Notification {
@@ -39,6 +43,17 @@ export default function BoardingPass() {
   const [emailError, setEmailError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Refresh ScrollTrigger when form visibility or step changes to recalculate positions
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally triggering refresh on state changes
+  useEffect(() => {
+    // Small delay to allow DOM to update before recalculating
+    const timeoutId = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [showForm, currentStep]);
 
   const steps = [
     { id: 0, label: "Basic Info" },
