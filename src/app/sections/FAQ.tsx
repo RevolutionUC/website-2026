@@ -26,11 +26,26 @@ export default function Faq() {
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base">
-                  The event is open to all students, regardless of major or
-                  experience level. Beginners are welcome!
+                  The event is open to all students that are 18+, regardless of
+                  major or experience level. Beginners are welcome!
                 </AccordionContent>
               </AccordionItem>
-
+              <AccordionItem
+                value="what-age-group"
+                className="border-white/10 bg-[#151477]"
+              >
+                <AccordionTrigger className="px-4 py-3 text-base font-medium text-white sm:px-6 sm:text-lg">
+                  <span className="flex-1 text-left">
+                    Can I attend if I'm under 18
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base">
+                  Unfortunately, the hackathon is only open to participants who
+                  are 18 or older. If you’re under 18, you won’t be able to
+                  attend this year, but we hope to welcome you in future events
+                  once you meet the age requirement.
+                </AccordionContent>
+              </AccordionItem>
               <AccordionItem
                 value="do-i-need-experience"
                 className="border-white/10 bg-[#151477]"
