@@ -4,31 +4,34 @@ import Image from "next/image";
 const trackData = [
   {
     title: "Most Technically Impressive",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Celebrates exceptional technical innovation, complexity, and engineering skill.",
   },
   {
     title: "Best Business Plan",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Honors the most feasible, scalable, and market-ready business strategy.",
   },
   {
     title: "Best Social Impact",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Rewards solutions that address pressing social, environmental, or humanitarian challenges.",
   },
   {
     title: "Best Use of AR",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Recognizes the most creative, technically sound, and impactful use of augmented reality.",
   },
   {
     title: "People's Choice",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description:
+      "Decided by participant votes to highlight the most popular project among attendees.",
   },
-
   {
     title: "Surprize / Super Secret track",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    description: "Shhhh...",
   },
 ];
-
 export default function Tracks() {
   return (
     <div
@@ -118,7 +121,7 @@ export default function Tracks() {
             {trackData.slice(0, 2).map((track, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300 group"
+                className="bg-white p-6 shadow-sm hover:shadow-md transition-shadow duration-300 group"
               >
                 <h3 className="text-2xl font-bold text-[#151477] mb-3 relative inline-block">
                   {track.title}
@@ -136,7 +139,7 @@ export default function Tracks() {
             {trackData.slice(2, 4).map((track, index) => (
               <div
                 key={index + 2}
-                className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300 group"
+                className="bg-white p-6 shadow-sm hover:shadow-md transition-shadow duration-300 group"
               >
                 <h3 className="text-2xl font-bold text-[#151477] mb-3 relative inline-block">
                   {track.title}
@@ -154,7 +157,7 @@ export default function Tracks() {
             {trackData.slice(4, 6).map((track, index) => (
               <div
                 key={index + 4}
-                className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300 group"
+                className="bg-white p-6 shadow-sm hover:shadow-md transition-shadow duration-300 group"
               >
                 <h3 className="text-2xl font-bold text-[#151477] mb-3 relative inline-block">
                   {track.title}
