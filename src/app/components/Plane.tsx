@@ -61,8 +61,8 @@ const Plane = () => {
 
     const positions = [
       { id: 'hero', position: { x: 0.075, y: 0, z: 0 }, rotation: { x: 0.3, y: -0.5, z: 0 } },
-      { id: 'clouds', position: { x: -0.2, y: 0, z: -1 }, rotation: { x: 0.5, y: 0.5, z: 0 } },
-      { id: 'about', position: { x: -0.2, y: 0, z: -1 }, rotation: { x: 0.5, y: 0.5, z: 0 } }
+      // { id: 'clouds', position: { x: -0.2, y: 0, z: -1 }, rotation: { x: 0.5, y: 0.5, z: 0 } },
+      { id: 'about', position: { x: -0.2, y: 0.075, z: -1 }, rotation: { x: 0.5, y: 0.5, z: 0 } }
     ];
 
     const animate = () => {
@@ -73,18 +73,17 @@ const Plane = () => {
     animate();
 
     const handleScroll = () => {
-      if (!plane) return;
+      if (!plane || !containerRef.current) return;
       
       const aboutSection = document.getElementById('about');
       if (!aboutSection) return;
       
       const aboutRect = aboutSection.getBoundingClientRect();
       
-      // Check if we've scrolled past the about section
-      if (aboutRect.bottom < 50) {
+      // Fly out when bottom of about section reaches 70% from top
+      if (aboutRect.bottom < window.innerHeight * 0.7) {
         if (!hasFlownOut) {
           hasFlownOut = true;
-          // Fly out of screen (move far to the right and down)
           gsap.to(plane.position, { 
             x: 3, 
             y: -2, 
@@ -102,50 +101,47 @@ const Plane = () => {
             overwrite: true
           });
         }
-        return;
-      }
-      
-      if (hasFlownOut && aboutRect.bottom >= 50) {
+      } else if (hasFlownOut && aboutRect.bottom >= window.innerHeight * 0.7) {
+        // Reset when scrolling back up
         hasFlownOut = false;
       }
       
-      let currentSection = '';
-      const sections = document.querySelectorAll('.section');
-      
-      // Find the section that takes up the most viewport space
-      let maxVisibleArea = 0;
-      
-      sections.forEach((section) => {
-        const rect = section.getBoundingClientRect();
+      // Section transitions (only when not flown out)
+      if (!hasFlownOut) {
+        let currentSection = '';
+        const sections = document.querySelectorAll('.section');
+        let maxVisibleArea = 0;
         
-        // Only consider sections up to and including 'about'
-        if (section.id === 'hero' || section.id === 'clouds' || section.id === 'about') {
-          // Calculate how much of the section is visible
-          const visibleTop = Math.max(0, rect.top);
-          const visibleBottom = Math.min(window.innerHeight, rect.bottom);
-          const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
           
-          if (visibleHeight > maxVisibleArea) {
-            maxVisibleArea = visibleHeight;
-            currentSection = section.id;
+          if (section.id === 'hero' || section.id === 'clouds' || section.id === 'about') {
+            const visibleTop = Math.max(0, rect.top);
+            const visibleBottom = Math.min(window.innerHeight, rect.bottom);
+            const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+            
+            if (visibleHeight > maxVisibleArea) {
+              maxVisibleArea = visibleHeight;
+              currentSection = section.id;
+            }
           }
-        }
-      });
+        });
 
-      const coords = positions.find(p => p.id === currentSection);
-      if (coords) {
-        gsap.to(plane.position, { 
-          ...coords.position, 
-          duration: 3, 
-          ease: 'power1.out',
-          overwrite: true
-        });
-        gsap.to(plane.rotation, { 
-          ...coords.rotation, 
-          duration: 3, 
-          ease: 'power1.out',
-          overwrite: true
-        });
+        const coords = positions.find(p => p.id === currentSection);
+        if (coords) {
+          gsap.to(plane.position, { 
+            ...coords.position, 
+            duration: 3, 
+            ease: 'power1.out',
+            overwrite: true
+          });
+          gsap.to(plane.rotation, { 
+            ...coords.rotation, 
+            duration: 3, 
+            ease: 'power1.out',
+            overwrite: true
+          });
+        }
       }
     };
 
