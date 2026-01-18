@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Generate QR code
+    console.log("THIS MEANS GENERATE QR CODE IS BEING CALLED");
     if (response.uuid) {
       const qrCodeBase64 = await generateQRCode(response.uuid);
 
@@ -248,7 +249,7 @@ async function saveRegistrationToDatabase(
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const { error } = await supabaseClient.from("participants").insert({
-      uuid: uuid,
+      user_id: uuid,
       first_name: data.firstName,
       last_name: data.lastName,
       email: data.email,
@@ -286,7 +287,7 @@ async function saveRegistrationToDatabase(
 }
 
 async function generateQRCode(uuid: string): Promise<string> {
-  // Create payload with all required info
+  // Create payload with uuid
   const payload = {
     uuid,
   };
@@ -315,7 +316,7 @@ async function updateRegistrationWithQRCodeAndResume(
       qr_base64: qrCodeBase64,
       resume_url: resumeUrl,
     })
-    .eq("uuid", uuid);
+    .eq("user_id", uuid);
 
   if (!error) {
     return null;
