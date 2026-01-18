@@ -1,5 +1,5 @@
 "use client";
-import Sponsors from "@/app/sections/Sponsors";
+// import Sponsors from "@/app/sections/Sponsors";
 import Hero from "@/app/sections/Hero";
 import About from "@/app/sections/About";
 import Clouds from "@/app/sections/Clouds";
