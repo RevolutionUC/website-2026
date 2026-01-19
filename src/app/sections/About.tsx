@@ -6,16 +6,8 @@ import Image from "next/image";
 export default function About() {
   return (
     <div id="about" className="section w-full h-screen relative overflow-hidden">
-      {/* Ground */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-[23%] bg-linear-to-b from-bg-blue-500 to-bg-red-500 opacity-40"
-        style={{
-          clipPath: "ellipse(100% 100% at 50% 100%)",
-        }}
-      />
-
       {/* Plane */}
-      <div className="absolute left-[5%] top-[40%] w-[500px] md:w-[600px] lg:w-[750px] z-10">
+      <div className="absolute left-[5%] top-[10%] w-[500px] md:w-[600px] lg:w-[750px] z-10">
         <Image
           src="/landing-plane.webp"
           alt="Landing Plane"
@@ -27,15 +19,23 @@ export default function About() {
       </div>
 
       {/* Panda */}
-      <div className="absolute right-[5%] bottom-[3%] w-[400px] md:w-[450px] lg:w-[600px] z-10">
+      <div className="absolute right-[15%] bottom-[12%] w-[400px] md:w-[450px] lg:w-[600px] z-10">
         <Image
           src="/waving-panda.webp"
           alt="Waving Panda"
-          fill
+          width={512}
+          height={512}
           className="object-contain"
           sizes="(max-width: 768px) 400px, (max-width: 1024px) 450px, 600px"
         />
       </div>
+      {/* Ground */}
+      {/* <div
+        className="absolute bottom-0 left-0 right-0 h-[23%] bg-linear-to-b from-[#228cf6]/80 to-[#edf6ff] opacity-40"
+        style={{
+          clipPath: "ellipse(100% 100% at 50% 100%)",
+        }}
+      /> */}
 
       {/* Content */}
       <div className="relative z-20 w-full h-full flex items-start justify-end pt-[10%] px-4 sm:px-6 lg:px-8">
