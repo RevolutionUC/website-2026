@@ -4,10 +4,175 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import React from "react";
+
+// FAQ data
+const FAQS: {
+  id: string;
+  question: string;
+  answer: React.ReactNode;
+}[] = [
+  {
+    id: "what-is-hackathon",
+    question: "What is a hackathon?",
+    answer: (
+      <>
+        Great question! A hackathon is an event where student hackers bring
+        their passion for technology to create a new project coded from
+        scratch. It's a chance to collaborate and create something unique —
+        an app, a robot, or a website. You'll learn something new in a
+        high-energy, engaging environment! At RevolutionUC, participants are
+        provided with opportunities to grow while building something they're
+        proud of.
+      </>
+    ),
+  },
+  {
+    id: "how-long",
+    question: "How long does RevolutionUC last?",
+    answer:
+      "Hacking at RevolutionUC lasts for 24 hours, with additional time before and after for introductions and presentations.",
+  },
+  {
+    id: "in-person",
+    question: "Is RevolutionUC 2026 in-person or virtual?",
+    answer:
+      "RevolutionUC 2026 is an in-person only event. Unfortunately, we won’t be providing a virtual option this year.",
+  },
+  {
+    id: "cost",
+    question: "How much does RevolutionUC cost?",
+    answer:
+      "The hackathon is completely free for participants. Food, swag, and workshops are all provided.",
+  },
+  {
+    id: "location",
+    question: "Where is the hackathon?",
+    answer: (
+      <>
+        This year we will be completely in-person at the{" "}
+        <a
+          href="https://innovation.uc.edu"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#19E363] underline"
+        >
+          1819 Innovation Hub
+        </a>{" "}
+        of the University of Cincinnati, located at 2900 Reading Rd,
+        Cincinnati, OH 45206.
+      </>
+    ),
+  },
+  {
+    id: "who-can-attend",
+    question: "Who can attend the hackathon?",
+    answer:
+      "The event is open to all students that are 18+, regardless of major or experience level. Beginners are welcome!",
+  },
+  {
+    id: "under-18",
+    question: "Can I attend if I'm under 18 year old?",
+    answer:
+      "Unfortunately, the hackathon is only open to participants who are 18 or older. If you’re under 18, you won’t be able to attend this year, but we hope to welcome you in future events once you meet the age requirement.",
+  },
+  {
+    id: "teams-register",
+    question: "How do teams register?",
+    answer:
+      "Teams are typically 2–4 people. You can come with a team or form one during the event.",
+  },
+  {
+    id: "no-team",
+    question: "What if I don't have a team?",
+    answer:
+      "That's okay! We will host a team formation event after the opening ceremony.",
+  },
+  {
+    id: "what-to-bring",
+    question: "What should I bring?",
+    answer:
+      "Bring your laptop, charger, and anything else you need to be comfortable (snacks, water bottle, etc.).",
+  },
+  {
+    id: "experience-level",
+    question: "What if I don't have much experience?",
+    answer:
+      "No experience is required. We'll have mentors, workshops, and resources to help you get started.",
+  },
+  {
+    id: "travel",
+    question: "Will there be travel reimbursements?",
+    answer:
+      "Unfortunately, we are unable to offer travel reimbursements at this time.",
+  },
+  {
+    id: "code-of-conduct",
+    question: "Is there a Code of Conduct?",
+    answer: (
+      <>
+        Absolutely! We operate under the{" "}
+        <a
+          href="https://static.mlh.io/docs/mlh-code-of-conduct.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#19E363] underline"
+        >
+          Major League Hacking Code of Conduct
+        </a>{" "}
+        to ensure an inclusive environment.
+      </>
+    ),
+  },
+  {
+    id: "more-questions",
+    question: "What if I have more questions?",
+    answer: (
+      <>
+        Send us an email at{" "}
+        <a
+          href="mailto:info@revolutionuc.com"
+          className="text-[#19E363] underline"
+        >
+          info@revolutionuc.com
+        </a>
+        . We’re always happy to help!
+      </>
+    ),
+  },
+];
+
+
+const itemClass = "border-white/10 bg-[#151477]";
+const triggerClass =
+  "px-4 py-3 text-base font-medium text-white sm:px-6 sm:text-lg";
+const contentClass =
+  "bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base";
+
+function FaqItem({
+  id,
+  question,
+  answer,
+}: {
+  id: string;
+  question: string;
+  answer: React.ReactNode;
+}) {
+  return (
+    <AccordionItem value={id} className={itemClass}>
+      <AccordionTrigger className={triggerClass}>
+        <span className="flex-1 text-left">{question}</span>
+      </AccordionTrigger>
+      <AccordionContent className={contentClass}>
+        {answer}
+      </AccordionContent>
+    </AccordionItem>
+  );
+}
+
 export default function Faq() {
   return (
-    <div id="faq" className="section w-full h-screen relative overflow-hidden">
-      {/* Content */}
+    <div id="faq" className="section w-full h-auto relative overflow-visible">
       <div className="relative z-20 flex h-full w-full items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-5xl bg-linear-to-b from-[#228CF6] to-[#1656C1] px-4 py-8 shadow-[0_24px_80px_rgba(0,0,0,0.4)] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
           <p className="text-left text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -16,100 +181,12 @@ export default function Faq() {
 
           <div className="mt-6 overflow-hidden border border-white/15 bg-white/5">
             <Accordion type="single" collapsible>
-              <AccordionItem
-                value="who-can-attend"
-                className="border-white/10 bg-[#151477]"
-              >
-                <AccordionTrigger className="px-4 py-3 text-base font-medium text-white sm:px-6 sm:text-lg">
-                  <span className="flex-1 text-left">
-                    Who can attend the hackathon?
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base">
-                  The event is open to all students that are 18+, regardless of
-                  major or experience level. Beginners are welcome!
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem
-                value="what-age-group"
-                className="border-white/10 bg-[#151477]"
-              >
-                <AccordionTrigger className="px-4 py-3 text-base font-medium text-white sm:px-6 sm:text-lg">
-                  <span className="flex-1 text-left">
-                    Can I attend if I'm under 18 year old?
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base">
-                  Unfortunately, the hackathon is only open to participants who
-                  are 18 or older. If you’re under 18, you won’t be able to
-                  attend this year, but we hope to welcome you in future events
-                  once you meet the age requirement.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem
-                value="do-i-need-experience"
-                className="border-white/10 bg-[#151477]"
-              >
-                <AccordionTrigger className="px-4 py-3 text-base font-medium text-white sm:px-6 sm:text-lg">
-                  <span className="flex-1 text-left">
-                    Do I need prior hacking experience?
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base">
-                  No experience is required. We&apos;ll have mentors, workshops,
-                  and resources to help you get started.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem
-                value="team-size"
-                className="border-white/10 bg-[#151477]"
-              >
-                <AccordionTrigger className="px-4 py-3 text-base font-medium text-white sm:px-6 sm:text-lg">
-                  <span className="flex-1 text-left">
-                    How big can teams be?
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base">
-                  Teams are typically 2–4 people. You can come with a team or
-                  form one during the event.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem
-                value="what-should-i-bring"
-                className="border-white/10 bg-[#151477]"
-              >
-                <AccordionTrigger className="px-4 py-3 text-base font-medium text-white sm:px-6 sm:text-lg">
-                  <span className="flex-1 text-left">What should I bring?</span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base">
-                  Bring your laptop, charger, and anything else you need to be
-                  comfortable (snacks, water bottle, etc.).
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem
-                value="cost-to-attend"
-                className="border-white/10 bg-[#151477]"
-              >
-                <AccordionTrigger className="px-4 py-3 text-base font-medium text-white sm:px-6 sm:text-lg">
-                  <span className="flex-1 text-left">
-                    How much does it cost to attend?
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-[#228CF6] px-4 py-3 text-left text-sm text-blue-50 sm:px-6 sm:text-base">
-                  The hackathon is completely free for participants. Food, swag,
-                  and workshops are all provided.
-                </AccordionContent>
-              </AccordionItem>
+              {FAQS.map((faq) => (
+                <FaqItem key={faq.id} {...faq} />
+              ))}
             </Accordion>
           </div>
         </div>
-      </div>
-      {/* Bottom color bar */}
-      <div className="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-[#151477] sm:h-6 lg:h-32">
-        <p className="text-center">panda sits here</p>
       </div>
     </div>
   );
