@@ -11,7 +11,7 @@ export interface RegistrationData {
   phoneNumber: string;
   shirtSize: string;
   hackathons: string;
-  graduationYear: string;
+  // graduationYear: string;
   githubUsername?: string;
   linkedInURL?: string;
   dietRestrictions?: string;

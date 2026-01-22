@@ -28,7 +28,10 @@ export async function POST(request: NextRequest) {
 
     if (response.error) {
       if (response.error.code === "23505") {
-        return NextResponse.json({ message: "This email is already registered." }, { status: 400 });
+        return NextResponse.json(
+          { message: "This email is already registered." },
+          { status: 400 },
+        );
       }
       throw response.error;
     }
@@ -36,9 +39,14 @@ export async function POST(request: NextRequest) {
 
     // Checks and uploads resume if any
     const resume = formData.get("resume") as File | null;
-    const resumeUrl: string | null = await uploadResumeIfAny(supabaseClient, resume, data.email);
+    const resumeUrl: string | null = await uploadResumeIfAny(
+      supabaseClient,
+      resume,
+      data.email,
+    );
 
     // Generate QR code
+    console.log("THIS MEANS GENERATE QR CODE IS BEING CALLED");
     if (response.uuid) {
       const qrCodeBase64 = await generateQRCode(response.uuid);
 
@@ -51,7 +59,10 @@ export async function POST(request: NextRequest) {
       );
 
       if (updateError) {
-        console.error("Failed to update QR/resume, but registration succeeded:", updateError);
+        console.error(
+          "Failed to update QR/resume, but registration succeeded:",
+          updateError,
+        );
       }
 
       // Send confirmation email (don't await - fire and forget)
@@ -62,7 +73,8 @@ export async function POST(request: NextRequest) {
       // Always return success since registration completed
       return NextResponse.json(
         {
-          message: "Registration successful! Check your email for confirmation.",
+          message:
+            "Registration successful! Check your email for confirmation.",
           data: {
             email: data.email,
             uuid: response.uuid,
@@ -77,7 +89,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Registration error:", error);
 
-    return NextResponse.json({ message: "An error occurred during registration" }, { status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred during registration" },
+      { status: 500 },
+    );
   }
 }
 
@@ -97,7 +112,7 @@ function extractRegistrationData(formData: FormData): RegistrationData {
     phoneNumber: formData.get("phoneNumber") as string,
     shirtSize: formData.get("shirtSize") as string,
     hackathons: formData.get("hackathons") as string,
-    graduationYear: formData.get("graduationYear") as string,
+    // graduationYear: formData.get("graduationYear") as string,
     githubUsername: (formData.get("githubUsername") as string) || undefined,
     linkedInURL: (formData.get("linkedInURL") as string) || undefined,
     dietRestrictions: (formData.get("dietRestrictions") as string) || undefined,
@@ -106,7 +121,10 @@ function extractRegistrationData(formData: FormData): RegistrationData {
   };
 }
 
-function validateRegistrationData(data: RegistrationData, formData: FormData): string[] {
+function validateRegistrationData(
+  data: RegistrationData,
+  formData: FormData,
+): string[] {
   const errors: string[] = [];
   const requiredFields: (keyof RegistrationData)[] = [
     "firstName",
@@ -121,7 +139,7 @@ function validateRegistrationData(data: RegistrationData, formData: FormData): s
     "phoneNumber",
     "shirtSize",
     "hackathons",
-    "graduationYear",
+    // "graduationYear",
   ];
 
   for (const field of requiredFields) {
@@ -148,11 +166,15 @@ function validateRegistrationData(data: RegistrationData, formData: FormData): s
   }
 
   // Validate graduation year (simple sanity check)
-  const gradYear = Number.parseInt(data.graduationYear, 10);
-  const currentYear = new Date().getFullYear();
-  if (Number.isNaN(gradYear) || gradYear < currentYear || gradYear > currentYear + 10) {
-    errors.push("Graduation year must be within a reasonable range");
-  }
+  // const gradYear = Number.parseInt(data.graduationYear, 10);
+  // const currentYear = new Date().getFullYear();
+  // if (
+  //   Number.isNaN(gradYear) ||
+  //   gradYear < currentYear ||
+  //   gradYear > currentYear + 10
+  // ) {
+  //   errors.push("Graduation year must be within a reasonable range");
+  // }
 
   errors.push(...checkAgreements(formData));
   return errors;
@@ -201,7 +223,9 @@ async function uploadResumeIfAny(
   let resumeUrl: string | null = null;
 
   // Get the public URL of the uploaded file
-  const { data: urlData } = supabaseClient.storage.from("resumes").getPublicUrl(resume_file_name);
+  const { data: urlData } = supabaseClient.storage
+    .from("resumes")
+    .getPublicUrl(resume_file_name);
 
   resumeUrl = urlData.publicUrl;
 
@@ -213,7 +237,9 @@ async function saveRegistrationToDatabase(
   data: RegistrationData,
 ): Promise<{ uuid: string | null; error: any }> {
   // Convert github username to full URL if provided
-  const githubUrl = data.githubUsername ? `https://github.com/${data.githubUsername}` : null;
+  const githubUrl = data.githubUsername
+    ? `https://github.com/${data.githubUsername}`
+    : null;
 
   // Generate UUID ONCE, outside the retry loop
   const uuid = randomUUID();
@@ -223,7 +249,7 @@ async function saveRegistrationToDatabase(
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const { error } = await supabaseClient.from("participants").insert({
-      uuid: uuid,
+      user_id: uuid,
       first_name: data.firstName,
       last_name: data.lastName,
       email: data.email,
@@ -231,7 +257,7 @@ async function saveRegistrationToDatabase(
       age: Number.parseInt(data.age, 10),
       gender: data.gender,
       school: data.school,
-      graduation_year: Number.parseInt(data.graduationYear, 10),
+      // graduation_year: Number.parseInt(data.graduationYear, 10),
       level_of_study: data.educationLevel,
       country: data.country,
       major: data.major,
@@ -261,7 +287,7 @@ async function saveRegistrationToDatabase(
 }
 
 async function generateQRCode(uuid: string): Promise<string> {
-  // Create payload with all required info
+  // Create payload with uuid
   const payload = {
     uuid,
   };
@@ -290,7 +316,7 @@ async function updateRegistrationWithQRCodeAndResume(
       qr_base64: qrCodeBase64,
       resume_url: resumeUrl,
     })
-    .eq("uuid", uuid);
+    .eq("user_id", uuid);
 
   if (!error) {
     return null;
