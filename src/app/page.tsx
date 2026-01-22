@@ -18,7 +18,7 @@ const Home = () => {
       <About />
       <BoardingPass />
       <Stats />
-      <Sponsors />
+      {/*<Sponsors />*/}
       <Prizes />
       <Faq />
       <Schedule />
