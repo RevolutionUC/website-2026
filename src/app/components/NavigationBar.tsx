@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import gsap from "gsap";
 import { useRouter, usePathname } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -27,6 +28,16 @@ export function NavigationBar() {
   const isMobile = useIsMobile();
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session, isPending } = authClient.useSession();
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.refresh();
+  };
+
+  const handleRegisterClick = () => {
+    scrollToSection("boarding-pass");
+  };
 
   // Handle hash-based scrolling after navigation from other routes
   useEffect(() => {
@@ -214,14 +225,18 @@ export function NavigationBar() {
                         {session.user.image ? (
                           <Image
                             src={session.user.image}
-                            alt={session.user.name || session.user.email || "User"}
+                            alt={
+                              session.user.name || session.user.email || "User"
+                            }
                             width={40}
                             height={40}
                             className="h-10 w-10 rounded-full border-2 border-white"
                           />
                         ) : (
                           <div className="h-10 w-10 rounded-full bg-[#19e363] flex items-center justify-center text-white font-mono font-semibold text-sm">
-                            {(session.user.name || session.user.email || "U")[0].toUpperCase()}
+                            {(session.user.name ||
+                              session.user.email ||
+                              "U")[0].toUpperCase()}
                           </div>
                         )}
                       </button>
