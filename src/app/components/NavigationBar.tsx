@@ -1,7 +1,9 @@
 "use client";
+import { useEffect } from "react";
 import Image from "next/image";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import gsap from "gsap";
+import { useRouter, usePathname } from "next/navigation";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -14,16 +16,42 @@ import { Button } from "@/components/ui/button";
 
 gsap.registerPlugin(ScrollToPlugin);
 
-const scrollToSection = (sectionId: string) => {
-  gsap.to(window, {
-    scrollTo: `#${sectionId}`,
-    duration: 1,
-    ease: "power2.inOut",
-  });
-};
-
 export function NavigationBar() {
   const isMobile = useIsMobile();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Handle hash-based scrolling after navigation from other routes
+  useEffect(() => {
+    if (pathname === "/") {
+      const targetSection = sessionStorage.getItem("scrollToSection");
+      if (targetSection) {
+        sessionStorage.removeItem("scrollToSection");
+        // Delay to ensure the page has fully rendered
+        setTimeout(() => {
+          gsap.to(window, {
+            scrollTo: `#${targetSection}`,
+            duration: 1,
+            ease: "power2.inOut",
+          });
+        }, 100);
+      }
+    }
+  }, [pathname]);
+
+  const scrollToSection = (sectionId: string) => {
+    if (pathname !== "/") {
+      // Store the target section and navigate to home page
+      sessionStorage.setItem("scrollToSection", sectionId);
+      router.push("/");
+    } else {
+      gsap.to(window, {
+        scrollTo: `#${sectionId}`,
+        duration: 1,
+        ease: "power2.inOut",
+      });
+    }
+  };
   return (
     <nav className="fixed top-0 left-0 right-0 z-100 bg-transparent pointer-events-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -157,7 +185,7 @@ export function NavigationBar() {
                 <NavigationMenuLink asChild>
                   <Button
                     className="hover:bg-white hover:cursor-pointer text-white font-mono text-sm sm:text-base md:text-lg hover:text-black bg-[#151477] rounded-none"
-                    onClick={() => scrollToSection("schedule")}
+                    onClick={() => router.push("/schedule")}
                   >
                     [SCHEDULE]
                   </Button>
