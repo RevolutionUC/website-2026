@@ -6,8 +6,46 @@ import Image from "next/image";
 export default function About() {
   return (
     <div id="about" className="section w-full h-screen relative overflow-hidden">
+      <div className="absolute inset-0 overflow-y-visible pointer-events-none">
+        <div
+          className="absolute top-[7%] right-[75%] w-[300px] h-64 opacity-70"
+          data-speed="0.9"
+        >
+          <Image
+            src="/cloud_final4.webp"
+            alt=""
+            fill
+            className="object-contain"
+          />
+        </div>
+
+        <div
+          className="absolute top-[2%] left-[5%] w-[700px] h-72 opacity-30"
+          data-speed="0.8"
+        >
+          <Image
+            src="/cloud_final1.webp"
+            alt=""
+            fill
+            className="object-contain"
+          />
+        </div>
+
+        <div
+          className="absolute top-[5%] right-[2%] w-[150px] h-72 opacity-60"
+          data-speed="1"
+        >
+          <Image
+            src="/cloud_final3.webp"
+            alt=""
+            fill
+            className="object-contain"
+          />
+        </div>
+
+      </div>
       {/* Plane */}
-      <div className="absolute left-[5%] top-[10%] w-[500px] md:w-[600px] lg:w-[750px] z-10">
+      <div className="absolute left-[0%] top-[50%] w-[500px] md:w-[600px] lg:w-[750px] z-10">
         <Image
           src="/landing-plane.webp"
           alt="Landing Plane"
@@ -19,7 +57,7 @@ export default function About() {
       </div>
 
       {/* Panda */}
-      <div className="absolute right-[15%] bottom-[12%] w-[400px] md:w-[450px] lg:w-[600px] z-10">
+      <div className="absolute right-[5%] top-[65%] w-[400px] md:w-[450px] lg:w-[600px] z-10">
         <Image
           src="/waving-panda.webp"
           alt="Waving Panda"
