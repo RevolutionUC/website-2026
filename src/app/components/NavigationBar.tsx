@@ -13,6 +13,13 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -191,16 +198,65 @@ export function NavigationBar() {
                   </Button>
                 </NavigationMenuLink>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Button
-                    className="hover:bg-white font-mono hover:cursor-pointer text-sm sm:text-base md:text-lg hover:text-black bg-[#19e363] rounded-none"
-                    onClick={() => scrollToSection("boarding-pass")}
-                  >
-                    [REGISTER]
-                  </Button>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+              {isPending ? (
+                <NavigationMenuItem>
+                  <div className="h-10 w-24 bg-gray-200 animate-pulse rounded" />
+                </NavigationMenuItem>
+              ) : session?.user ? (
+                <NavigationMenuItem>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
+                        aria-label="User menu"
+                      >
+                        {session.user.image ? (
+                          <Image
+                            src={session.user.image}
+                            alt={session.user.name || session.user.email || "User"}
+                            width={40}
+                            height={40}
+                            className="h-10 w-10 rounded-full border-2 border-white"
+                          />
+                        ) : (
+                          <div className="h-10 w-10 rounded-full bg-[#19e363] flex items-center justify-center text-white font-mono font-semibold text-sm">
+                            {(session.user.name || session.user.email || "U")[0].toUpperCase()}
+                          </div>
+                        )}
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <div className="px-2 py-1.5">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-50">
+                          {session.user.name || "User"}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                          {session.user.email}
+                        </p>
+                      </div>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={handleSignOut}
+                        className="cursor-pointer text-red-600 focus:text-red-600 dark:text-red-400"
+                      >
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    <Button
+                      className="hover:bg-white font-mono hover:cursor-pointer text-sm sm:text-base md:text-lg hover:text-black bg-[#19e363] rounded-none"
+                      onClick={handleRegisterClick}
+                    >
+                      [REGISTER]
+                    </Button>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
