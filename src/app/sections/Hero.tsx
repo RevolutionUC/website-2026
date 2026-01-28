@@ -13,8 +13,6 @@ export default function HeroSection() {
       id="hero"
       className="section w-full h-screen flex items-center px-4 sm:px-6 lg:px-8 relative z-50"
     >
-
-
       {/* Plane */}
       <AnimatedPlane />
 
@@ -151,16 +149,17 @@ export default function HeroSection() {
             className="object-contain"
           />
         </div>
-
       </div>
 
       {/* Content */}
-      <div className="w-full max-w-6xl mx-auto relative z-10 pointer-events-none pt-25 z-40">
+      <div className="w-full max-w-6xl mx-auto relative pointer-events-none pt-25 z-40">
         <div className="max-w-2xl">
           <h1 className="underline  text-[#151477] underline-offset-4 decoration-[#19E363] text-8xl font-semibold">
             Revolution UC
           </h1>
-          <p className="py-3 text-3xl text-[#151477] font-medium italic">March 28 - 29, 2026</p>
+          <p className="py-3 text-3xl text-[#151477] font-medium italic">
+            March 28 - 29, 2026
+          </p>
           <p className="py-2 text-3xl text-[#228CF6]">Build. Learn. Grow.</p>
         </div>
       </div>
