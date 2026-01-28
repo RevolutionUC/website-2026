@@ -203,7 +203,7 @@ export function NavigationBar() {
                 <NavigationMenuLink asChild>
                   <Button
                     className="hover:bg-white hover:cursor-pointer text-white font-mono text-sm sm:text-base md:text-lg hover:text-black bg-[#151477] rounded-none"
-                    onClick={() => router.push("/schedule")}
+                    onClick={() => scrollToSection("schedule")}
                   >
                     [SCHEDULE]
                   </Button>
