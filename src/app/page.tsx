@@ -1,4 +1,6 @@
 "use client";
+// import Sponsors from "@/app/sections/Sponsors";
+import { Suspense } from "react";
 import Hero from "@/app/sections/Hero";
 import About from "@/app/sections/About";
 import Clouds from "@/app/sections/Clouds";
@@ -13,7 +15,9 @@ const Home = () => {
       <Hero />
       <Clouds />
       <About />
-      <BoardingPass />
+      <Suspense fallback={<div>Loading...</div>}>
+        <BoardingPass />
+      </Suspense>
       <Stats />
       <Prizes />
       <Faq />

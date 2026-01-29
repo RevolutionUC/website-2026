@@ -4,7 +4,6 @@ export default function Stats() {
   return (
     <section id="stats" className="section relative w-full overflow-hidden">
       <div className="relative w-full h-[1250px] sm:h-[1320px] md:h-[1400px]">
-
         {/* LEFT – 24 hours */}
         <div className="absolute left-[-20%] sm:left-[-18%] top-[4%] z-20">
           <Image
@@ -49,7 +48,6 @@ export default function Stats() {
             className="h-auto w-[clamp(600px,56vw,1020px)]"
           />
         </div>
-
       </div>
     </section>
   );
