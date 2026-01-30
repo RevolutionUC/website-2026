@@ -4,50 +4,50 @@ export default function Stats() {
   return (
     <section id="stats" className="section relative w-full overflow-hidden">
       <div className="relative w-full h-auto sm:h-[1250px] md:h-[1400px]">
-        {/* MOBILE – stacked small screens */}
-        <div className="sm:hidden flex flex-col items-center gap-4 py-8">
-          <div className="w-10/12 max-w-xs">
+        {/* MOBILE – rearranged: 60+ right, 870+ left, much closer */}
+        <div className="sm:hidden flex flex-col items-center gap-0 py-0 relative">
+          <div className="w-full px-0 max-w-xl z-10 -mb-16">
             <Image
               src="/24_hours_grain.webp"
               alt="24 hours"
-              width={600}
-              height={360}
+              width={820}
+              height={492}
               className="w-full h-auto"
               priority={false}
-              sizes="(max-width: 640px) 80vw, 600px"
+              sizes="(max-width: 640px) 100vw, 820px"
             />
           </div>
 
-          <div className="w-10/12 max-w-xs">
+          <div className="w-full px-0 max-w-xl -mt-80 transform translate-x-10 z-40">
             <Image
               src="/60+_grain.webp"
               alt="60+ projects"
-              width={600}
-              height={360}
+              width={880}
+              height={528}
               className="w-full h-auto"
-              sizes="(max-width: 640px) 80vw, 600px"
+              sizes="(max-width: 640px) 100vw, 880px"
             />
           </div>
 
-          <div className="w-10/12 max-w-xs">
+          <div className="w-full px-0 max-w-2xl -mt-100 transform -translate-x-6 z-30">
             <Image
               src="/870+_grain.webp"
               alt="870+ registrants"
-              width={800}
-              height={480}
+              width={1500}
+              height={1000}
               className="w-full h-auto"
-              sizes="(max-width: 640px) 80vw, 800px"
+              sizes="(max-width: 640px) 100vw, 980px"
             />
           </div>
 
-          <div className="w-10/12 max-w-xs">
+          <div className="w-full px-0 max-w-xl -mt-100 transform translate-x-6 z-40">
             <Image
               src="/300+_grain.webp"
               alt="300+ participants"
-              width={600}
-              height={360}
+              width={880}
+              height={528}
               className="w-full h-auto"
-              sizes="(max-width: 640px) 80vw, 600px"
+              sizes="(max-width: 640px) 100vw, 880px"
             />
           </div>
         </div>
