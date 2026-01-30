@@ -78,7 +78,7 @@ export default function Stats() {
           </div>
 
           {/* LEFT – 870+ */}
-          <div className="absolute left-[-6%] sm:left-[-16%] top-[30%] z-20">
+          <div className="absolute left-[-6%] sm:left-[-16%] top-[25%] z-20">
             <Image
               src="/870+_grain.webp"
               alt="870+ registrants"
