@@ -37,7 +37,7 @@ export default function About() {
       </div>
 
       {/* Content*/}
-      <div className="relative z-20 w-full flex items-start justify-center lg:justify-end py-10 lg:pt-[10vh] px-6 sm:px-12 lg:px-8">
+      <div className="relative z-20 w-full flex items-start justify-center lg:justify-end pb-5 lg:pt-[10vh] px-6 sm:px-12 lg:px-8">
         <div className="max-w-2xl lg:mr-[10vw] text-center lg:text-left">
           <SplitText
             text="About RevolutionUC"
