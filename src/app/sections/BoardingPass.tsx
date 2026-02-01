@@ -61,7 +61,7 @@ export default function BoardingPass() {
         setShowForm(true);
       }
       // Scroll to the section smoothly after a short delay to ensure component is mounted
-      setTimeout(() => {
+      const timeoutId = window.setTimeout(() => {
         const element = document.getElementById("boarding-pass");
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -71,6 +71,7 @@ export default function BoardingPass() {
       const url = new URL(window.location.href);
       url.searchParams.delete("openForm");
       window.history.replaceState({}, "", url.toString());
+      return () => window.clearTimeout(timeoutId);
     }
   }, [searchParams, showForm]);
 

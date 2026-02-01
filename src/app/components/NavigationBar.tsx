@@ -1,19 +1,11 @@
 "use client";
-import { useEffect } from "react";
-import Image from "next/image";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import gsap from "gsap";
-import { useRouter, usePathname } from "next/navigation";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useGsapRouteCleanup } from "@/app/components/gsap-route-cleanup";
-import { authClient } from "@/lib/auth-client";
-
-import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,6 +14,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { authClient } from "@/lib/auth-client";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -31,6 +31,7 @@ export function NavigationBar() {
   const pathname = usePathname();
   const gsapCleanup = useGsapRouteCleanup();
   const { data: session, isPending } = authClient.useSession();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -59,6 +60,12 @@ export function NavigationBar() {
     }
   }, [pathname]);
 
+  useEffect(() => {
+    if (!isMobile && mobileOpen) {
+      setMobileOpen(false);
+    }
+  }, [isMobile, mobileOpen]);
+
   const scrollToSection = (sectionId: string) => {
     if (pathname !== "/") {
       // Store the target section and navigate to home page
@@ -73,8 +80,22 @@ export function NavigationBar() {
       });
     }
   };
+
+  const mobileLinkClasses =
+    "w-full text-left cursor-pointer font-mono text-sm text-white bg-transparent relative pb-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#19E363] after:transition-all after:duration-300 hover:after:w-full";
+
+  const handleMobileScroll = (sectionId: string) => {
+    setMobileOpen(false);
+    scrollToSection(sectionId);
+  };
+
+  const handleMobileNavigate = (path: string) => {
+    setMobileOpen(false);
+    gsapCleanup?.killBeforeNavigate();
+    router.push(path);
+  };
   return (
-    <>
+    <nav className="fixed top-0 left-0 right-0 z-100 bg-transparent pointer-events-auto">
       {/* MLH Trust Badge */}
       <a
         id="mlh-trust-badge"
@@ -90,9 +111,8 @@ export function NavigationBar() {
         />
       </a>
 
-      <nav className="fixed top-0 left-0 right-0 z-100 bg-transparent pointer-events-auto">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pr-10 sm:pr-12 lg:pr-16 py-3">
-          <div className="flex items-center justify-between gap-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pr-10 sm:pr-12 lg:pr-16 py-3">
+        <div className="flex items-center justify-between gap-4">
           {/* Left: Logo */}
           <button
             type="button"
@@ -112,8 +132,27 @@ export function NavigationBar() {
             </div>
           </button>
 
+          {/* Mobile: Hamburger */}
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="sm:hidden h-10 w-10 rounded-md bg-transparent text-white hover:bg-transparent focus-visible:ring-2 focus-visible:ring-[#19E363]"
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMobileOpen((open) => !open)}
+          >
+            <span className="sr-only">Toggle navigation</span>
+            {mobileOpen ? (
+              <X className="h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Menu className="h-6 w-6" aria-hidden="true" />
+            )}
+          </Button>
+
           {/* Right: Navigation links */}
-          <NavigationMenu viewport={isMobile}>
+          <NavigationMenu viewport={isMobile} className="hidden sm:flex">
             <NavigationMenuList className="flex-wrap gap-2 sm:gap-3">
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
@@ -223,9 +262,9 @@ export function NavigationBar() {
                   <Button
                     className="hover:bg-white hover:cursor-pointer text-white font-mono text-sm sm:text-base md:text-lg hover:text-black bg-[#151477] rounded-none"
                     onClick={() => {
-                    gsapCleanup?.killBeforeNavigate();
-                    router.push("/schedule");
-                  }}
+                      gsapCleanup?.killBeforeNavigate();
+                      router.push("/schedule");
+                    }}
                   >
                     [SCHEDULE]
                   </Button>
@@ -247,14 +286,18 @@ export function NavigationBar() {
                         {session.user.image ? (
                           <Image
                             src={session.user.image}
-                            alt={session.user.name || session.user.email || "User"}
+                            alt={
+                              session.user.name || session.user.email || "User"
+                            }
                             width={40}
                             height={40}
                             className="h-10 w-10 rounded-full border-2 border-white"
                           />
                         ) : (
                           <div className="h-10 w-10 rounded-full bg-[#19e363] flex items-center justify-center text-white font-mono font-semibold text-sm">
-                            {(session.user.name || session.user.email || "U")[0].toUpperCase()}
+                            {(session.user.name ||
+                              session.user.email ||
+                              "U")[0].toUpperCase()}
                           </div>
                         )}
                       </button>
@@ -292,6 +335,80 @@ export function NavigationBar() {
               )}
             </NavigationMenuList>
           </NavigationMenu>
+
+          {/* Mobile: Dropdown panel */}
+          {mobileOpen ? (
+            <div
+              id="mobile-navigation"
+              className="absolute left-0 right-0 top-full mt-3 rounded-md border border-[#1d1c88] bg-[#151477] shadow-xl sm:hidden"
+            >
+              <div className="flex flex-col gap-2 px-4 py-4">
+                <button
+                  type="button"
+                  className={mobileLinkClasses}
+                  onClick={() => handleMobileScroll("about")}
+                >
+                  [ABOUT]
+                </button>
+                <button
+                  type="button"
+                  className={mobileLinkClasses}
+                  onClick={() => handleMobileScroll("tracks")}
+                >
+                  [TRACKS]
+                </button>
+                <button
+                  type="button"
+                  className={mobileLinkClasses}
+                  onClick={() => handleMobileScroll("faq")}
+                >
+                  [FAQ]
+                </button>
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-start rounded-none border border-white/20 bg-[#151477] text-white font-mono text-sm hover:bg-white hover:text-black"
+                  onClick={() => handleMobileNavigate("/schedule")}
+                >
+                  [SCHEDULE]
+                </button>
+
+                {isPending ? (
+                  <div className="h-10 w-24 bg-white/20 animate-pulse rounded" />
+                ) : session?.user ? (
+                  <div className="flex flex-col gap-2">
+                    <div className="text-white">
+                      <p className="text-sm font-medium">
+                        {session.user.name || "User"}
+                      </p>
+                      <p className="text-xs text-white/70 truncate">
+                        {session.user.email}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setMobileOpen(false);
+                        await handleSignOut();
+                      }}
+                      className="w-full text-left font-mono text-sm text-red-200 hover:text-red-100"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <Button
+                    className="w-full justify-start rounded-none bg-[#19e363] text-black font-mono text-sm hover:bg-white"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      handleRegisterClick();
+                    }}
+                  >
+                    [REGISTER]
+                  </Button>
+                )}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </nav>
