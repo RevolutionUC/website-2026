@@ -1,20 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import gsap from "gsap";
-import { useRouter, usePathname } from "next/navigation";
-import { useGsapRouteCleanup } from "@/app/components/gsap-route-cleanup";
-import { authClient } from "@/lib/auth-client";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { Menu, X } from "lucide-react";
-
-import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useGsapRouteCleanup } from "@/app/components/gsap-route-cleanup";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,6 +14,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { authClient } from "@/lib/auth-client";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -97,8 +96,6 @@ export function NavigationBar() {
   };
   return (
     <nav className="fixed top-0 left-0 right-0 z-100 bg-transparent pointer-events-auto">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <div className="flex items-center justify-between gap-4 relative">
       {/* MLH Trust Badge */}
       <a
         id="mlh-trust-badge"
@@ -114,9 +111,8 @@ export function NavigationBar() {
         />
       </a>
 
-      <nav className="fixed top-0 left-0 right-0 z-100 bg-transparent pointer-events-auto">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pr-10 sm:pr-12 lg:pr-16 py-3">
-          <div className="flex items-center justify-between gap-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pr-10 sm:pr-12 lg:pr-16 py-3">
+        <div className="flex items-center justify-between gap-4">
           {/* Left: Logo */}
           <button
             type="button"
