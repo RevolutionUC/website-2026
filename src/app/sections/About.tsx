@@ -3,6 +3,7 @@
 import SplitText from "@/app/effects/SplitText";
 import Image from "next/image";
 
+
 export default function About() {
   return (
     <div 
@@ -68,17 +69,42 @@ export default function About() {
       </div>
 
       {/* Panda*/}
-      <div className="relative lg:absolute lg:right-[5vw] lg:bottom-[12vh] w-full lg:w-[30vw] flex justify-center lg:block z-10 pb-12 lg:pb-0">
-        <div className="w-[70vw] sm:w-[35vw] lg:w-full max-w-[500px]">
+      <div className="relative lg:absolute lg:right-[5vw] lg:bottom-[12vh] w-full lg:w-[25vw] flex justify-center lg:block z-10 pb-12 lg:pb-0">
+        {/* Panda */}
+        <div className="relative w-[55vw] sm:w-[35vw] lg:w-full max-w-[500px]">
           <Image
             src="/waving-panda.webp"
             alt="Waving Panda"
             width={512}
             height={512}
-            className="w-full h-auto object-contain"
+            className="w-full h-auto object-contain relative z-20"
           />
+          
+          {/* cloud */}
+          <div className="absolute bottom-[-55%] sm:bottom-[-15%] lg:bottom-[-50%] left-[50%] -translate-x-[50%] w-[120%] sm:w-[140%] lg:w-[160%] h-auto z-10">
+            <Image
+              src="/cloud_final2.webp"
+              alt=""
+              width={900}
+              height={328}
+              className="w-full h-auto object-contain"
+            />
+          </div>
         </div>
       </div>
+
+      <div
+        className="hidden lg:block absolute top-[50%] sm:bottom-[-15%] left-[-20%] w-[350px] sm:w-[625px] lg:w-[900px] h-40 sm:h-65 lg:h-100 opacity-100"
+      >
+        <Image
+          src="/cloud_final4.webp"
+          alt=""
+          fill
+          className="object-contain h-auto scale-x-[-1] rotate-10"
+        />
+      </div>
+      
+      
     </div>
   );
 }
