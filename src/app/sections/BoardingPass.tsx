@@ -212,7 +212,7 @@ export default function BoardingPass() {
   }
 
   return (
-    <div id="boarding-pass" className="section w-full min-h-screen relative overflow-hidden">
+    <div id="boarding-pass" className="section w-full sm:min-h-screen relative overflow-hidden">
       <div className="relative z-20 w-full h-full flex items-start justify-center pt-[10%] px-4 sm:px-6 lg:px-8">
         <div
           className={`w-full max-w-4xl rounded-3xl ${

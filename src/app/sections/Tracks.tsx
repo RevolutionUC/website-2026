@@ -93,7 +93,7 @@ export default function Tracks() {
 
       {/* Content */}
       <div className="relative z-20 w-full max-w-7xl mx-auto">
-        <div className="mt-16 mb-16 overflow-visible">
+        <div className="mt-16 mb-5 sm:mb-16 overflow-visible">
           <SplitText
             text="Tracks"
             className="text-[#151477] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight overflow-visible"
