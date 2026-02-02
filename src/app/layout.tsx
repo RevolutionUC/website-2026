@@ -51,7 +51,7 @@ export default function RootLayout({
               <div
                 className="fixed inset-0 bg-top bg-[length:100%_100%] md:bg-[length:100%_auto]"
                 style={{
-                  backgroundImage: "url(/website-bg.webp)",
+                  backgroundImage: "url(/website-bg-no-grain.webp)",
                   transform: "translateZ(0)",
                   backfaceVisibility: "hidden",
                 }}
