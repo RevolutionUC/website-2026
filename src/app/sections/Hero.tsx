@@ -43,7 +43,7 @@ export default function HeroSection() {
         </div>
 
         <div
-          className="absolute top-[-5%] sm:top-[-10%] left-[25%] w-[80px] sm:w-[115px] lg:w-[150px] h-36 sm:h-54 lg:h-72 opacity-60 scale-x-[-1]"
+          className="absolute top-[-5%] sm:top-[-10%] left-[25%] w-20 sm:w-[115px] lg:w-[150px] h-36 sm:h-54 lg:h-72 opacity-60 scale-x-[-1]"
           data-speed="0.9"
         >
           <Image
@@ -160,19 +160,21 @@ export default function HeroSection() {
           <p className="py-2 sm:py-3 text-2xl sm:text-2xl lg:text-3xl text-[#151477] font-medium italic text-center sm:text-left">
             March 28 - 29, 2026
           </p>
-          <p className="py-1 sm:py-2 text-2xl sm:text-2xl lg:text-3xl text-[#228CF6] text-center sm:text-left">Build. Learn. Grow.</p>
+          <p className="py-1 sm:py-2 text-2xl sm:text-2xl lg:text-3xl text-[#228CF6] text-center sm:text-left">
+            Build. Learn. Grow.
+          </p>
           {/* Forms */}
-            <div className="flex flex-col md:flex-row justify-center sm:justify-start items-center gap-4 md:gap-6 pt-4 md:w-full max-w-4xl pointer-events-auto mx-auto sm:mx-0">
-            <a 
-              href="https://docs.google.com/forms/d/e/1FAIpQLSenXi3j73_xkx3T-teDlvgLcqEfTFD2hTI2k-pqb6LeFHh8WQ/viewform?usp=dialog" 
+          <div className="flex flex-col md:flex-row justify-center sm:justify-start items-center gap-4 md:gap-6 pt-4 md:w-full max-w-4xl pointer-events-auto mx-auto sm:mx-0">
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSenXi3j73_xkx3T-teDlvgLcqEfTFD2hTI2k-pqb6LeFHh8WQ/viewform?usp=dialog"
               className="w-auto px-6 py-3 text-center text-base md:text-lg font-semibold uppercase rounded-full text-[#EDF6FF] bg-[#151477] border-[#19E363] border-2 transition-all duration-300 hover:bg-[#19E363] hover:text-white hover:scale-[1.02] active:scale-[0.98] shadow-lg"
               target="_blank"
               rel="noopener noreferrer"
             >
               SPONSOR INTEREST FORM
             </a>
-            <a 
-              href="https://docs.google.com/forms/d/e/1FAIpQLSe73deyjRimChLuJ_rDeke1gFa0fhzGvbqVPtMn3mZq96xIrw/viewform?usp=preview" 
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSe73deyjRimChLuJ_rDeke1gFa0fhzGvbqVPtMn3mZq96xIrw/viewform?usp=preview"
               className="w-auto px-6 py-3 text-center text-base md:text-lg font-semibold uppercase rounded-full text-[#EDF6FF] bg-[#151477] border-[#19E363] border-2 transition-all duration-300 hover:bg-[#19E363] hover:text-white hover:scale-[1.02] active:scale-[0.98] shadow-lg"
               target="_blank"
               rel="noopener noreferrer"

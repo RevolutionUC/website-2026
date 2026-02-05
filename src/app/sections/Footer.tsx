@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+
 export default function Footer() {
   const webTeamMembers = [
     {
@@ -22,8 +23,8 @@ export default function Footer() {
   return (
     <footer className="bg-linear-to-r from-[#228CF6] from-1% to-[#151477] to-40% text-white py-8">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
-          <div className="text-sm">
+        <div className="flex flex-col items-center justify-between gap-6 md:flex-row md:items-center">
+          <div className="text-xs sm:text-sm text-center md:text-left">
             &copy; {new Date().getFullYear()} RevolutionUC
           </div>
           <div className="flex flex-col items-center gap-2 text-center">
@@ -31,30 +32,72 @@ export default function Footer() {
             <div className="flex flex-wrap items-center justify-center gap-2">
               <Badge
                 variant="outline"
-                className="hover:cursor-pointer text-white"
+                className="text-white hover:cursor-pointer"
               >
-                <a href="https://amaandoes.tech" target="_blank">
+                <a
+                  href="https://amaandoes.tech"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                >
                   Amaan
                 </a>
               </Badge>
-              <span className="text-white/70">//</span>
+              <span className="hidden text-white/70 md:inline">//</span>
               <Badge
                 variant="outline"
-                className="hover:cursor-pointer text-white"
+                className="text-white hover:cursor-pointer"
               >
-                <a href="https://karthik-rachamolla.vercel.app" target="_blank">
+                <a
+                  href="https://karthik-rachamolla.vercel.app"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                >
                   Karthik
                 </a>
               </Badge>
-              <span className="text-white/70">//</span>
-              <span className="relative inline-flex items-center">
+              <span className="hidden text-white/70 md:inline">//</span>
+
+              {/* Mobile-friendly: tap to expand */}
+              <details className="group md:hidden">
+                <summary className="list-none">
+                  <Badge
+                    variant="outline"
+                    className="inline-flex items-center text-white hover:cursor-pointer"
+                  >
+                    the Web Team{"<3"}
+                  </Badge>
+                </summary>
+                <div className="mt-3 w-[min(22rem,90vw)] rounded-xl border border-white/15 bg-[#0c1b4a]/95 p-4 text-xs text-white shadow-lg backdrop-blur-sm">
+                  <div className="block text-[11px] uppercase tracking-[0.2em] text-white/70">
+                    Web Team
+                  </div>
+                  <div className="mt-3 grid grid-cols-1 gap-2 text-sm">
+                    {webTeamMembers.map((member) => (
+                      <a
+                        key={member.name}
+                        href={member.url}
+                        className="truncate text-white/90 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {member.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </details>
+
+              {/* Desktop: hover/focus tooltip */}
+              <span className="relative hidden items-center md:inline-flex">
                 <Badge
                   variant="outline"
                   className="peer inline-flex items-center text-white hover:cursor-pointer"
                 >
                   the Web Team{"<3"}
                 </Badge>
-                <span className="pointer-events-none absolute left-1/2 bottom-full z-10 mb-3 w-72 -translate-x-1/2 rounded-xl border border-white/15 bg-[#0c1b4a]/95 p-4 text-xs text-white opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-200 peer-hover:pointer-events-auto peer-hover:opacity-100 peer-focus-visible:pointer-events-auto peer-focus-visible:opacity-100 hover:pointer-events-auto hover:opacity-100">
+                <span className="pointer-events-none absolute left-1/2 bottom-full z-10 mb-3 w-[min(22rem,90vw)] -translate-x-1/2 rounded-xl border border-white/15 bg-[#0c1b4a]/95 p-4 text-xs text-white opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-200 peer-hover:pointer-events-auto peer-hover:opacity-100 peer-focus-visible:pointer-events-auto peer-focus-visible:opacity-100">
                   <span className="absolute left-1/2 bottom-0 h-2 w-2 -translate-x-1/2 translate-y-1/2 rotate-45 border-b border-r border-white/20 bg-[#0c1b4a]/95" />
                   <span className="block text-[11px] uppercase tracking-[0.2em] text-white/70">
                     Web Team
@@ -75,11 +118,6 @@ export default function Footer() {
                 </span>
               </span>
             </div>
-          </div>
-          <div className="text-sm">
-            <a>twitter</a>
-            <a>ig</a>
-            <a>linkedin</a>
           </div>
         </div>
       </div>
