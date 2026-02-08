@@ -104,6 +104,7 @@ function extractRegistrationData(formData: FormData): RegistrationData {
     dietRestrictions: (formData.get("dietRestrictions") as string) || undefined,
     raceEthnicity: formData.getAll("raceEthnicity") as string[],
     referralSource: formData.getAll("referralSource") as string[],
+    mlhOptionalCommunication: formData.get("mlhOptionalCommunication") === "on",
   };
 }
 
@@ -247,6 +248,7 @@ async function saveRegistrationToDatabase(
       hackathons: data.hackathons,
       race_ethnicity: data.raceEthnicity || null,
       referral_source: data.referralSource || null,
+      mlh_optional_communication: data.mlhOptionalCommunication,
     });
 
     if (!error) {

@@ -458,6 +458,10 @@ export default function BoardingPass() {
                       MLH Code of Conduct
                     </a>
                   </Checkbox>
+                  <Checkbox name="mlhOptionalCommunication">
+                    I authorize MLH to send me occasional emails about relevant events, career
+                    opportunities, and community announcements.
+                  </Checkbox>
                 </fieldset>
               </div>
 
