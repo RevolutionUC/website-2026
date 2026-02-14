@@ -274,8 +274,23 @@ async function saveRegistrationToDatabase(
   // Generate UUID ONCE, outside the retry loop
   const uuid = randomUUID();
 
+  const MAX_REGISTERED = 400;
   const maxAttempts = 3;
   let lastError: any = null;
+
+  // Count participants that are NOT waitlisted 
+  const { count: nonWaitlistedCount, error: countError } = await supabaseClient
+    .from("participants")
+    .select("*", { count: "exact", head: true })
+    .neq("status", "WAITLISTED");
+
+  if (countError) {
+    return { uuid: null, error: countError };
+  }
+
+  
+  const status =
+    (nonWaitlistedCount ?? 0) >= MAX_REGISTERED ? "WAITLISTED" : "REGISTERED";
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const { error } = await supabaseClient.from("participants").insert({
@@ -298,6 +313,7 @@ async function saveRegistrationToDatabase(
       hackathons: data.hackathons,
       race_ethnicity: data.raceEthnicity || null,
       referral_source: data.referralSource || null,
+      status: status,
       mlh_optional_communication: data.mlhOptionalCommunication,
     });
 
