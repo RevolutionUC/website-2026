@@ -260,6 +260,25 @@ export default function BoardingPass() {
                   />
                 </div>
               </button>
+
+              <details className="mx-auto w-full max-w-3xl">
+                <summary className="cursor-pointer select-none text-center text-xs sm:text-sm font-medium text-gray-800 underline underline-offset-4 hover:text-gray-900">
+                  Disclaimer
+                </summary>
+                <div className="mt-3 rounded-2xl bg-white/80 backdrop-blur-sm p-4 text-xs sm:text-sm text-gray-700 shadow-sm">
+                  <p className="text-center">
+                    If for some reason you are unable to register, please use
+                    this{" "}
+                    <a
+                      className="underline"
+                      href="https://forms.gle/RqDamb1tQnbE3FsZ7"
+                    >
+                      link
+                    </a>{" "}
+                    instead.
+                  </p>
+                </div>
+              </details>
             </>
           ) : (
             <div className="mb-6">
