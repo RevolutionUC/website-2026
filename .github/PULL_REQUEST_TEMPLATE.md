@@ -13,7 +13,8 @@ Closes #
 <!-- Mark items with "x" when completed -->
 
 - [ ] No compiler warnings (if applicable)
-- [ ] Code is formatted with `oxfmt` or `prettier`
+- [ ] No linting errors
+- [ ] Code is formatted with `oxfmt`
 - [ ] No useless or dead code (if applicable)
 - [ ] Code is easy to understand
 - [ ] Doc comments are used for all functions, interfaces etc. (where appropriate)
