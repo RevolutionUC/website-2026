@@ -26,6 +26,18 @@ npm run build
 
 If the build fails, fix it before pushing.
 
+## Code Quality (Required)
+
+PRs should not be opened with lint errors.
+
+```bash
+# Lint
+npm run lint
+
+# Format
+npm run format
+```
+
 ## Database Changes (Drizzle)
 
 Schema: `src/lib/db/schema.ts`
