@@ -1,3 +1,2 @@
-# READ BEFORE PROCEEDING
+# Official RevolutionUC Website
 
-## ONLY **AMAAN** PUSHES TO MAIN
